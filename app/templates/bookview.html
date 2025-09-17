@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="d-flex flex-row flex-nowrap w-100 vh-100 row">
+	<div class="p-5">
+		<h1>Fancy Salad</h1>
+		<div class="flex-column justify-content-between col-3">
+			<div>{% for ingredient_list in ingredient_lists %}
+				<div>
+					<h3>{% ingredient_list.name %}</h3>
+					<ul>
+						{% for ingredient in ingredient_list.ingredients %}
+						<li>{{ ingredient }}</li>
+						{% endfor %}
+					</ul>
+
+				</div>{% endfor %}
+
+				<div class="card">
+					<div class="card-body border-start border-danger border-5">
+						<h5>Time-Saving Tip</h5>
+						<p>Make extra dressing for when you prepare this in the future. </p>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!--    <div class="col-6 bg-primary border"></div>-->
+</div>
+{% endblock %}
