@@ -1,0 +1,40 @@
+from pydantic import BaseModel, PositiveInt, Field
+from app.recipes.models import Recipe, RecipeIngredient, Ingredient
+
+
+class IngredientSchema(BaseModel):
+  slug: str = Field(max_length=50)
+  name: str = Field(max_length=50)
+
+class RecipeIngredient(BaseModel):
+  amount: PositiveInt | None = None
+  unit: str | None = Field(max_length=20,default=None)
+  list: str | None = Field(max_length=100,default=None)
+  ingredient: IngredientSchema
+
+
+class CreateRecipe(BaseModel):
+  recipe_ingredients: list[RecipeIngredient]
+  directions: str
+  name: str = Field(max_length=100)
+  sidebar: str | None = None
+
+  def to_db(self):
+    recipe = Recipe(**self.model_dump(mode="python",exclude={'recipe_ingredients'},exclude_unset=True))
+    for i in self.recipe_ingredients:
+        if not (ingredient := Ingredient.query.get(i.ingredient.slug)):
+          # TOOD: handle 
+          ingredient = Ingredient(**i.ingredient.model_dump(mode="python",exclude_unset=True))
+
+    
+      
+
+class RecipeOut(BaseModel):
+  slug: str
+  recipe_ingredients: list[RecipeIngredient]
+  directions: str
+  name: str
+  sidebar: str | None = None
+
+  class Config: # deprecated
+    orm_mode = True # deprecated maybe

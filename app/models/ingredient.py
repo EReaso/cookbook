@@ -7,4 +7,11 @@ class Ingredient(db.Model):
     # Association with RecipeIngredient
     recipes_link = db.relationship("RecipeIngredient", back_populates="ingredient", cascade="all, delete-orphan")
 
-    # recipe_ingredients_association = db.relationship("Recipe", back_populates="ingredients")
+    # View-only convenience relationship to Recipes via association table
+    recipes_view = db.relationship(
+        "Recipe",
+        secondary="recipe_ingredient",
+        viewonly=True,
+        lazy="dynamic",
+        back_populates="ingredients"
+    )

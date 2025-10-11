@@ -1,9 +1,8 @@
 from flask import render_template, abort, flash, redirect, url_for
 from app.extensions import db
 
-from app.models.recipe import Recipe
-from app.models.recipeingredient import RecipeIngredient
-from app.recipes import bp
+from .models import *
+from . import bp
 
 
 @bp.get("/recipes/")

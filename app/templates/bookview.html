@@ -1,31 +1,50 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div class="d-flex flex-row flex-nowrap w-100 vh-100 row">
-	<div class="p-5">
-		<h1>Fancy Salad</h1>
-		<div class="flex-column justify-content-between col-3">
-			<div>{% for ingredient_list in ingredient_lists %}
-				<div>
-					<h3>{% ingredient_list.name %}</h3>
-					<ul>
-						{% for ingredient in ingredient_list.ingredients %}
-						<li>{{ ingredient }}</li>
-						{% endfor %}
-					</ul>
+	<h1>{{ recipe.name }}
+		<hr>
+	</h1>
 
-				</div>{% endfor %}
+	<div class="d-flex flex-row flex-nowrap w-100 vh-100 gap-5">
+		<div class="flex-shrink-0 col-3"> {# Container for left side#}
+			<div class="flex-column justify-content-between">
+				<div>{% for ingredient_list in ingredient_lists %}
+					<div>
+						<h3>{{ ingredient_list[0] }}
+							<hr>
+						</h3>
+						<ul>
+							{% for ingredient in ingredient_list[1] %}
+								<li>{{ ingredient.pretty }}</li>
+							{% endfor %}
+						</ul>
 
-				<div class="card">
-					<div class="card-body border-start border-danger border-5">
-						<h5>Time-Saving Tip</h5>
-						<p>Make extra dressing for when you prepare this in the future. </p>
-					</div>
+					</div>{% endfor %}
+
+					{% if recipe.sidebar %}
+						<div class="border-start border-danger border-5 ps-2 ">
+							{#							TODO: Fix the splitting issue depending on data source#}
+							<strong>{{ recipe.sidebar.split("\\n")[0] }}</strong>
+							<p>{{ recipe.sidebar.split("\\n")[1] }}</p>
+						</div>
+					{% endif %}
 				</div>
-			</div>
 
+			</div>
 		</div>
+		<!--    <div class="col-6 bg-primary border"></div>-->
+
+		<div class="flex-grow-1 flex-shrink-1">
+			<h3>Method
+				<hr>
+			</h3>
+
+			<div id="directions">{{ recipe.directions }}</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+		<script>
+          document.getElementById('directions').innerHTML =
+              marked.parse(`{{ recipe.directions }}`);
+		</script>
 	</div>
-	<!--    <div class="col-6 bg-primary border"></div>-->
-</div>
 {% endblock %}
