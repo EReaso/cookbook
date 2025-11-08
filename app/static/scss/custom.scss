@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Serif:ital,wdth,wght@0,62.5..100,100..900;1,62.5..100,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+$font-family-base: "Noto Serif", sans-serif;
+
+:is(h1, h2, h3, h4, h5, h6) + hr {
+	@extend .mt-0;
+}
+
+:is(h1, h2, h3, h4, h5, h6) hr {
+	@extend .mt-0, .border-2, .mx-auto;
+	width: calc(100% - 0.5em);
+}
+
+h1, h2, h3, h4, h5, h6 {
+	width: fit-content;
+	align-self: center;
+}
+
+.ingredient-weight::before {
+	content: "⸱";
+	display: inline-block;
+	font-weight: bold;
+	@extend .text-secondary, .me-1;
+}
+
+ol li::marker {
+	font-size: 1.5em;
+	font-weight: 350;
+	font-optical-sizing: auto;
+	@extend .text-secondary;
+	font-variation-settings: "wdth" 62.5;
+}
+
+@import "bootstrap/scss/bootstrap";

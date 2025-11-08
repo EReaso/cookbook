@@ -1,50 +1,66 @@
 {% extends "base.html" %}
 
 {% block body %}
-	<h1>{{ recipe.name }}
-		<hr>
-	</h1>
+	<div class="d-flex flex-row w-100 gap-5">
 
-	<div class="d-flex flex-row flex-nowrap w-100 vh-100 gap-5">
-		<div class="flex-shrink-0 col-3"> {# Container for left side#}
-			<div class="flex-column justify-content-between">
-				<div>{% for ingredient_list in ingredient_lists %}
-					<div>
-						<h3>{{ ingredient_list[0] }}
-							<hr>
-						</h3>
-						<ul>
-							{% for ingredient in ingredient_list[1] %}
-								<li>{{ ingredient.pretty }}</li>
-							{% endfor %}
-						</ul>
+		<div class="p-5">
+			<h1>{{ recipe.name }}
+				<hr>
+			</h1>
 
-					</div>{% endfor %}
+			<div class="flex-shrink-0"> {# Container for left side#}
+				<div class="flex-column justify-content-between">
+					<div>{% for ingredient_list in ingredient_lists %}
+						<div>
+							<h3>{{ ingredient_list[0] }}
 
-					{% if recipe.sidebar %}
-						<div class="border-start border-danger border-5 ps-2 ">
-							{#							TODO: Fix the splitting issue depending on data source#}
-							<strong>{{ recipe.sidebar.split("\\n")[0] }}</strong>
-							<p>{{ recipe.sidebar.split("\\n")[1] }}</p>
-						</div>
-					{% endif %}
+							</h3>
+							<ul>
+								{% for ingredient in ingredient_list[1] %}
+									<li>
+										{{ ingredient.pretty }}
+										{% if ingredient.weight %}
+											<small class="text-secondary ingredient-weight">{{ ingredient.weight }}
+												grams</small>{% endif %}
+									</li>
+								{% endfor %}
+							</ul>
+
+						</div>{% endfor %}
+
+						{% if recipe.sidebar %}
+							<div class="border-start border-danger border-5 ps-2 ">
+								{#							TODO: Fix the splitting issue depending on data source#}
+								<strong>{{ recipe.sidebar.split("\\n")[0] }}</strong>
+								<p>{{ recipe.sidebar.split("\\n")[1] }}</p>
+							</div>
+						{% endif %}
+					</div>
 				</div>
+			</div>
+			<hr>
 
+			<div class="flex-grow-1 flex-shrink-1">
+				<h3>Method
+				</h3>
+
+				<div id="directions">{{ recipe.directions }}</div>
 			</div>
 		</div>
-		<!--    <div class="col-6 bg-primary border"></div>-->
 
-		<div class="flex-grow-1 flex-shrink-1">
-			<h3>Method
-				<hr>
-			</h3>
-
-			<div id="directions">{{ recipe.directions }}</div>
+		{#		Right side - Image#}
+		<div class="p-3 col-6 flex-grow-0 flex-shrink-0 d-flex flex-column align-content-center justify-content-center gap-1 flex-wrap">
+			{% for image in recipe.image_urls %}
+				<img src="{{ image }}" class="img-fluid rounded-5 flex-shrink-1 flex-grow-0"
+				     alt="{{ recipe.name }}">
+			{% endfor %}
 		</div>
-		<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
-		<script>
-          document.getElementById('directions').innerHTML =
-              marked.parse(`{{ recipe.directions }}`);
-		</script>
 	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+	<script>
+      document.getElementById('directions').innerHTML =
+          marked.parse(`{{ recipe.directions }}`);
+	</script>
+
 {% endblock %}

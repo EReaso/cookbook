@@ -1,0 +1,17 @@
+{
+  "name": "cookbook2",
+  "version": "1.0.0",
+  "description": "Flask project with Bootstrap 5.3 and custom SCSS",
+  "main": "index.js",
+  "scripts": {
+    "build": "pnpm exec sass app/static/scss/custom.scss app/static/css/custom.css --style=compressed",
+    "postinstall": "pnpm run build"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.8"
+  },
+  "devDependencies": {
+    "sass": "^1.80.0"
+  },
+  "packageManager": "pnpm@10.18.1"
+}
