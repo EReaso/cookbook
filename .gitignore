@@ -728,7 +728,6 @@ tmtags
 *.dbs
 *.psm
 *.cmp
-*.html
 *.bsf
 wlf*
 *.wlf
