@@ -5,23 +5,27 @@ from .models import *
 from . import bp
 
 
-@bp.get("/recipes/")
+@bp.get("/")
 def get_recipes():
-    recipes = Recipe.query.all()
-    return render_template("recipes.html", recipes=recipes)
+	from flask import request
+	page = request.args.get("page", 1, type=int)
+	per_page = request.args.get("per_page", 10, type=int)
+	pagination = Recipe.query.paginate(page=page, per_page=per_page, error_out=False)
+	recipes = pagination.items
+	return render_template("recipes.html", recipes=recipes, pagination=pagination)
 
-@bp.post("/recipes/")
+
+@bp.post("/")
 def post_recipe():
-    """
-    {
+	"""
+	{
 
 
-    """
-    pass
+	"""
+	pass
 
 
-
-@bp.get("/recipe/<slug>/")
+@bp.get("/<slug>/")
 def get_recipe(slug):
-    recipe = Recipe.query.filter_by(slug=slug).first_or_404()
-    return render_template("recipe.html", recipe=recipe)
+	recipe = Recipe.query.filter_by(slug=slug).first_or_404()
+	return render_template("recipe.html", recipe=recipe)
