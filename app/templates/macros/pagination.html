@@ -1,0 +1,32 @@
+{% from 'macros/random.j2' import randint %}
+
+{% macro pagination_widget(pagination) %}
+	<nav aria-label="..."
+	     class="d-flex flex-row mx-auto col-md-10 gap-2">
+
+		<ul class="pagination py-auto">
+			<li class="page-item{% if not pagination.has_prev %} disabled{% endif %}">
+				<a class="page-link" href="?page={{ pagination.prev_num }}">Previous</a>
+			</li>
+			<li class="page-item"><a class="page-link" href="#">1</a></li>
+			<li class="page-item active">
+				<a class="page-link" href="#" aria-current="page">2</a>
+			</li>
+			<li class="page-item"><a class="page-link" href="#">3</a></li>
+			<li class="page-item{% if not pagination.has_next %} disabled{% endif %}">
+				<a class="page-link" href="?page={{ pagination.next_num }}">Next</a>
+			</li>
+		</ul>
+
+		<form class="flex-grow form-floating flex-shrink-0" method="get">
+			{% with id = randint() %}
+				<label class="form-label" for="{{ id }}">
+					Items per page:</label>
+				<input class="form-control form-control-sm" name="per_page"
+				       aria-label="Items per page"
+				       type="number" value="10" min="1" max="100" id="{{ id }}" placeholder="10">
+			{% endwith %}
+			<button class="btn btn-primary">Go</button>
+		</form>
+	</nav>
+{% endmacro %}
