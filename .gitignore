@@ -767,3 +767,26 @@ drcRunDir/*
 abstract.log*
 abstract.record*
 secring.*
+
+# JetBrains / IntelliJ / PyCharm
+*.iml
+/.idea/
+
+# VSCode: ignore extension recommendations (remove whitelist if you want this ignored)
+.vscode/extensions.json
+
+# GitHub Copilot related (repo-local configs / data)
+.copilot/
+.copilotrc
+.github/copilot.yml
+.github/copilot/
+
+# Generic Copilot / suggestion artifacts
+copilot.*# GitHub Copilot diff/state artifacts
+CopilotDiffState
+*.CopilotDiffState
+.idea/CopilotDiffState
+.idea/**/CopilotDiffState*
+.vscode/CopilotDiffState*
+.copilot/CopilotDiffState
+.github/copilot/CopilotDiffState
