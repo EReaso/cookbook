@@ -1,0 +1,25 @@
+[flake8]
+max-line-length = 120
+exclude = 
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    migrations,
+    node_modules,
+    .idea
+ignore = E203, E266, E501, W503
+max-complexity = 10
+
+[isort]
+profile = black
+line_length = 120
+skip = migrations,.venv,venv,node_modules
+
+[coverage:run]
+omit = 
+    */tests/*
+    */migrations/*
+    */venv/*
+    */.venv/*
+    */node_modules/*
