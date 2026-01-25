@@ -1,31 +1,33 @@
-from flask import render_template, abort, flash, redirect, url_for
+from flask import abort, flash, redirect, render_template, url_for
+
 from app.extensions import db
 
-from .models import *
 from . import bp
+from .models import *
 
 
 @bp.get("/")
 def get_recipes():
-	from flask import request
-	page = request.args.get("page", 1, type=int)
-	per_page = request.args.get("per_page", 10, type=int)
-	pagination = Recipe.query.paginate(page=page, per_page=per_page, error_out=False)
-	recipes = pagination.items
-	return render_template("recipes.html", recipes=recipes, pagination=pagination)
+    from flask import request
+
+    page = request.args.get("page", 1, type=int)
+    per_page = request.args.get("per_page", 10, type=int)
+    pagination = Recipe.query.paginate(page=page, per_page=per_page, error_out=False)
+    recipes = pagination.items
+    return render_template("recipes.html", recipes=recipes, pagination=pagination)
 
 
 @bp.post("/")
 def post_recipe():
-	"""
-	{
+    """
+    {
 
 
-	"""
-	pass
+    """
+    pass
 
 
 @bp.get("/<slug>/")
 def get_recipe(slug):
-	recipe = Recipe.query.filter_by(slug=slug).first_or_404()
-	return render_template("recipe.html", recipe=recipe)
+    recipe = Recipe.query.filter_by(slug=slug).first_or_404()
+    return render_template("recipe.html", recipe=recipe)

@@ -1,9 +1,11 @@
 """Test configuration and fixtures."""
+
 import os
 import tempfile
 from pathlib import Path
 
 import pytest
+
 from app import app as flask_app
 from app.extensions import db as _db
 
@@ -26,6 +28,7 @@ def app():
 
     # Update storage directory for testing
     from app.extensions import storage
+
     storage.init_app(flask_app, dir=storage_dir)
 
     # Create the database and tables
@@ -39,6 +42,7 @@ def app():
     os.unlink(db_path)
     # Clean up storage directory
     import shutil
+
     shutil.rmtree(storage_dir, ignore_errors=True)
 
 

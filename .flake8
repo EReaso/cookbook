@@ -8,10 +8,7 @@ exclude =
     migrations,
     node_modules,
     .idea
-# W191: indentation contains tabs
-# E101: indentation contains mixed spaces and tabs
-# E117: over-indented
-ignore = E203, E266, E501, W503, W191, E101, E117
+ignore = E203, E266, E501, W503
 max-complexity = 10
 
 [isort]

@@ -1,5 +1,7 @@
 """Tests for recipe routes."""
+
 import pytest
+
 from app.recipes.models import Recipe
 
 

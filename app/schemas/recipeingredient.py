@@ -1,10 +1,12 @@
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 from marshmallow import fields
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
+
 from app.models.recipeingredient import RecipeIngredient
 
 
 class RecipeIngredientSchema(SQLAlchemyAutoSchema):
     """Schema for recipe ingredient relationships."""
+
     # Define ingredient fields explicitly with proper attribute paths
     amount = auto_field()
     unit = auto_field()

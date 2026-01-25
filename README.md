@@ -106,19 +106,23 @@ pytest tests/test_models.py
 
 ### Code Style
 
-This project uses **tabs for indentation** with the following guidelines:
-- Tab width: 2 spaces (for display)
-- Continuation indentation: 8 spaces
+This project follows **Black's opinionated code style**:
+- 4-space indentation
 - Line length: 120 characters
+- Double quotes for strings (with `skip-string-normalization` disabled by default)
 
 **Linting and Formatting:**
-- **flake8**: Configured to accept tabs (W191, E101, E117 ignored)
-- **isort**: Configured to use tabs for import sorting
-- **Black**: Not used due to lack of tab support
+- **Black**: Automatic code formatting
+- **isort**: Import sorting (configured to work with Black)
+- **flake8**: Style and quality linting
 
 ### Code Quality Tools
 
-Lint code with flake8:
+Format code with black:
+
+```bash
+black app tests
+```
 
 ```bash
 flake8 app tests
@@ -128,6 +132,12 @@ Sort imports with isort:
 
 ```bash
 isort app tests
+```
+
+Lint code with flake8:
+
+```bash
+flake8 app tests
 ```
 
 ### Pre-commit Hooks

@@ -1,7 +1,10 @@
 """Tests for Recipe models."""
-import pytest
+
 from fractions import Fraction
-from app.recipes.models import Recipe, Ingredient, RecipeIngredient
+
+import pytest
+
+from app.recipes.models import Ingredient, Recipe, RecipeIngredient
 
 
 class TestRecipe:

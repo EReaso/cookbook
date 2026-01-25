@@ -31,6 +31,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements-dev.txt
     
+    - name: Format code with black
+      run: |
+        black app tests
+    
+    - name: Sort imports with isort
+      run: |
+        isort app tests
+    
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -38,14 +46,10 @@ jobs:
         # check for style issues
         flake8 app tests --count --statistics
     
-    - name: Sort imports with isort
-      run: |
-        isort app tests
-    
-    - name: Check if import sorting changes were needed
+    - name: Check if formatting changes were needed
       run: |
         if [[ -n $(git status --porcelain) ]]; then
-          echo "Import sorting was applied. Please run 'isort app tests' locally."
+          echo "Code formatting was applied. Please run 'black app tests && isort app tests' locally."
           git diff
           exit 1
         fi
