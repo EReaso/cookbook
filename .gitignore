@@ -790,3 +790,6 @@ CopilotDiffState
 .vscode/CopilotDiffState*
 .copilot/CopilotDiffState
 .github/copilot/CopilotDiffState
+
+# Generated CSS files (built from SCSS)
+app/static/css/custom.css
