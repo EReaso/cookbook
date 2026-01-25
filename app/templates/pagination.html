@@ -1,51 +1,52 @@
 {% from 'random.j2' import randint %}
 
 {% macro pagination_widget(pagination) %}
-    <nav aria-label="..."
-         class="d-flex flex-row mx-auto col-md-10 gap-2">
-
-        <ul class="pagination py-auto">
+    <nav aria-label="Page navigation"
+         class="d-flex flex-column flex-md-row justify-content-start align-items-center mx-auto col-md-10 gap-2">
+        <ul class="pagination mb-0">
             <li class="page-item{% if not pagination.has_prev %} disabled{% endif %}">
-                <a class="page-link" href="?page={{ pagination.prev_num }}">Previous</a>
+                <a class="page-link"
+                   href="?page={{ pagination.prev_num }}&per_page={{ request.args.get('per_page', 10) }}">Previous</a>
             </li>
 
-            {% for page in pagination.iter_pages() %}
-                {% if page == pagination.page %}
-                    <li class="page-item active">
+            {% for page in pagination.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=2) %}
+                {% if page %}
+                    <li class="page-item{% if page == pagination.page %} active{% endif %}">
                         <a class="page-link"
-                           href="?page={{ page }}"
-                           aria-current="page">{{ page }}</a></li>
-                {% elif page is not None %}
-                    <li class="page-item">
-                        <a class="page-link"
-                           href="?page={{ page }}"
-                        >{{ page }}</a></li>
+                           href="?page={{ page }}&per_page={{ request.args.get('per_page', 10) }}">{{ page }}</a>
+                    </li>
                 {% else %}
-                    <li class="page-item">...</li>{% endif %}
-
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                {% endif %}
             {% endfor %}
 
             <li class="page-item{% if not pagination.has_next %} disabled{% endif %}">
-                <a class="page-link" href="?page={{ pagination.next_num }}">Next</a>
+                <a class="page-link"
+                   href="?page={{ pagination.next_num }}&per_page={{ request.args.get('per_page', 10) }}">Next</a>
             </li>
         </ul>
 
-        <form class="flex-grow form-floating flex-shrink-0 d-flex flex-row" method="get">
-            {% with id = randint() %}
-                <label class="form-label flex-shrink-0 flex-grow-1" for="{{ id }}">
-                    Items per page:</label>
-                <input class="form-control form-control-sm " name="per_page"
-                       aria-label="Items per page"
-                       type="number" value="10" min="1" max="100" id="{{ id }}" placeholder="10">
-            {% endwith %}
-            {% with id = randint() %}
-                <label class="form-label flex-shrink-0 flex-grow-1" for="{{ id }}">
-                    Page:</label>
-                <input class="form-control form-control-sm " name="per_page"
-                       aria-label="Items per page"
-                       type="number" value="10" min="1" max="{{ pagination.pages }}" id="{{ id }}" placeholder="10">
-            {% endwith %}
-            <button class="btn btn-primary">Go</button>
+        <div class="vr mx-2 d-none d-md-block"></div>
+        {#        <hr class="d-block d-md-none w-100 my-2" />#}
+
+        <form class="d-flex gap-2 align-items-center" method="get" style="min-width:260px;">
+            <div class="form-floating w-50" {#style="width:110px;"#}>
+                {% with id=randint() %}
+                    <input class="form-control form-control-sm" id="{{ id }}" name="per_page" type="number" min="1"
+                           max="100" value="{{ request.args.get('per_page', 10) }}">
+                    <label for="{{ id }}">Per page</label>
+                {% endwith %}
+            </div>
+
+            <div class="form-floating w-50" {#style="width:110px;"#}>
+                {% with id=randint() %}
+                    <input class="form-control form-control-sm" id="{{ id }}" name="page" type="number" min="1"
+                           max="{{ pagination.pages }}" value="{{ pagination.page }}">
+                    <label for="{{ id }}">Page</label>
+                {% endwith %}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-sm">Go</button>
         </form>
     </nav>
 {% endmacro %}
