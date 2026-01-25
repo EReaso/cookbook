@@ -35,13 +35,17 @@ jobs:
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 app tests --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings
-        flake8 app tests --count --exit-zero --max-complexity=10 --statistics
+        # check for style issues
+        flake8 app tests --count --statistics
     
-    - name: Check formatting with black
+    - name: Sort imports with isort
       run: |
-        black --check app tests
+        isort app tests
     
-    - name: Check import sorting with isort
+    - name: Check if import sorting changes were needed
       run: |
-        isort --check-only app tests
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "Import sorting was applied. Please run 'isort app tests' locally."
+          git diff
+          exit 1
+        fi

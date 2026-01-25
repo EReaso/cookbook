@@ -1,0 +1,27 @@
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | venv
+  | migrations
+  | node_modules
+  | __pycache__
+  | \.pytest_cache
+  | htmlcov
+  | dist
+  | build
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 120
+skip = ["migrations", ".venv", "venv", "node_modules"]
+use_parentheses = true
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+indent = "\t"
