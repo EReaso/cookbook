@@ -46,7 +46,7 @@ jobs:
         pip install -r requirements-dev.txt
     
     - name: Install Node.js dependencies
-      run: pnpm install
+      run: pnpm install --no-frozen-lockfile
     
     - name: Build CSS
       run: pnpm run build
