@@ -27,7 +27,7 @@ class Storage:
 		if dir is not None:
 			chosen_dir = Path(dir)
 		elif app is not None:
-			chosen_dir = Path(app.instance_path)
+			chosen_dir = Path(app.instance_path) / "storage"
 
 		if chosen_dir is None:
 			raise ValueError("must provide app or dir to initialize storage")
