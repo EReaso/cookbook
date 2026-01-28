@@ -12,6 +12,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        ref: ${{ github.head_ref }}
     
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -39,17 +42,20 @@ jobs:
       run: |
         isort app tests
     
+    - name: Commit formatting changes
+      if: github.event_name == 'pull_request'
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        if [[ -n $(git status --porcelain) ]]; then
+          git add -A
+          git commit -m "style: auto-format code with black and isort"
+          git push
+        fi
+    
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 app tests --count --select=E9,F63,F7,F82 --show-source --statistics
         # check for style issues
         flake8 app tests --count --statistics
-    
-    - name: Check if formatting changes were needed
-      run: |
-        if [[ -n $(git status --porcelain) ]]; then
-          echo "Code formatting was applied. Please run 'black app tests && isort app tests' locally."
-          git diff
-          exit 1
-        fi

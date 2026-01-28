@@ -116,16 +116,15 @@ This project follows **Black's opinionated code style**:
 - **isort**: Import sorting (configured to work with Black)
 - **flake8**: Style and quality linting
 
+**Automated Formatting:**
+The CI/CD pipeline automatically formats code with Black and isort on pull requests. If formatting changes are needed, they will be automatically committed to your PR branch by the GitHub Actions bot.
+
 ### Code Quality Tools
 
 Format code with black:
 
 ```bash
 black app tests
-```
-
-```bash
-flake8 app tests
 ```
 
 Sort imports with isort:
