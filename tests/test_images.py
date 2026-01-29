@@ -2,8 +2,6 @@
 
 import io
 
-import pytest
-
 
 class TestImageRoutes:
     """Test suite for image routes."""
