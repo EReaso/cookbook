@@ -3,14 +3,13 @@
 import os
 import sys
 import tempfile
+from importlib import import_module
 from pathlib import Path
 
 import pytest
 
 # Ensure repository root is on sys.path so `import app` works in tests
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from importlib import import_module
 
 _app = import_module("app")
 _create = getattr(_app, "create_app", None)

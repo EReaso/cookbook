@@ -1,9 +1,5 @@
 """Tests for Recipe models."""
 
-from fractions import Fraction
-
-import pytest
-
 from app.recipes.models import Ingredient, Recipe, RecipeIngredient
 
 
