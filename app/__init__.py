@@ -1,4 +1,5 @@
 from flask import Flask
+
 from app.extensions import db, migrate, storage
 from app.images import bp as images_bp
 from app.recipes import bp as recipe_bp

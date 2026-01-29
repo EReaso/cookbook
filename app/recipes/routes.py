@@ -1,5 +1,4 @@
-from flask import render_template, request, abort
-
+from flask import abort, render_template, request
 
 from . import bp
 from .models import Recipe
