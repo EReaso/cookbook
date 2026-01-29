@@ -12,3 +12,6 @@ alembic>=1.13.0
 
 # WSGI server for production
 gunicorn>=21.2.0
+
+# PostgreSQL support for production
+psycopg2-binary>=2.9.9
