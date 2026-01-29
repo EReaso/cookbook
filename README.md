@@ -14,6 +14,30 @@ A Flask-based web application for managing recipes with ingredients, images, and
 - Python 3.10+
 - Node.js 20+ (for SCSS compilation)
 - pnpm package manager
+- Docker & Docker Compose (optional, for containerized deployment)
+
+## Environment Configuration
+
+The application uses environment variables for configuration:
+
+- `DATABASE_URL`: Database connection string (defaults to SQLite for local dev)
+- `SECRET_KEY`: Flask secret key for session management and security
+
+**Security Best Practices:**
+
+1. **Never commit `.env` files** to version control (already in `.gitignore`)
+2. **Generate strong SECRET_KEY** values:
+   ```bash
+   python -c "import secrets; print(secrets.token_hex(32))"
+   ```
+3. **For production**, use secure secret management:
+   - AWS Secrets Manager
+   - HashiCorp Vault
+   - Kubernetes Secrets
+   - GitHub Actions Secrets (for CI/CD)
+4. **Rotate secrets regularly**
+
+See `.env.example` for a template with detailed instructions.
 
 ## Installation
 
@@ -63,7 +87,47 @@ pnpm run build
 
 ## Running the Application
 
-### Development Server
+### Option 1: Docker Compose (Recommended for Testing)
+
+Docker Compose provides a complete environment with PostgreSQL database:
+
+1. **Set up environment variables:**
+
+```bash
+cp .env.example .env
+# Generate a secure SECRET_KEY and update .env
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+2. **Start the application:**
+
+```bash
+docker-compose up --build
+```
+
+The application will be available at `http://localhost:5000`
+
+3. **Run database migrations (in a new terminal):**
+
+```bash
+docker-compose exec web flask db upgrade
+```
+
+4. **Stop the application:**
+
+```bash
+docker-compose down
+```
+
+To remove volumes (including database data):
+
+```bash
+docker-compose down -v
+```
+
+### Option 2: Local Development Server
+
+For local development without Docker:
 
 ```bash
 python wsgi.py
@@ -71,7 +135,7 @@ python wsgi.py
 
 The application will be available at `http://localhost:5000`
 
-### Production Server
+### Option 3: Production Server
 
 Use gunicorn:
 

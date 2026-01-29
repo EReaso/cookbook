@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: cookbook-postgres
+    environment:
+      POSTGRES_DB: cookbook
+      POSTGRES_USER: cookbook
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cookbook_dev_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cookbook"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: cookbook-web
+    environment:
+      DATABASE_URL: postgresql://cookbook:${POSTGRES_PASSWORD:-cookbook_dev_password}@db:5432/cookbook
+      SECRET_KEY: ${SECRET_KEY}
+      FLASK_APP: wsgi.py
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./app:/app/app
+      - ./migrations:/app/migrations
+      - ./wsgi.py:/app/wsgi.py
+
+volumes:
+  postgres_data:

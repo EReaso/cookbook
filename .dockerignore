@@ -1,0 +1,67 @@
+# Git
+.git
+.gitignore
+.github
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+.eggs
+*.egg
+.pytest_cache
+.coverage
+htmlcov
+.tox
+.nox
+
+# Virtual environments
+venv
+env
+ENV
+.venv
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Development tools
+.pre-commit-config.yaml
+.flake8
+setup.cfg
+pyproject.toml
+
+# Documentation
+README.md
+LICENSE
+
+# Tests
+tests
+requirements-dev.txt
+
+# Node.js
+node_modules
+package.json
+package-lock.json
+pnpm-lock.yaml
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Temporary files
+*.tmp
+*.bak
+tmp/
+
+# Build artifacts
+dist
+build
+*.log
