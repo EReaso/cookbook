@@ -4,8 +4,7 @@
   "description": "Flask project with Bootstrap 5.3 and custom SCSS",
   "main": "index.js",
   "scripts": {
-    "build": "pnpm exec sass app/static/scss/custom.scss app/static/css/custom.css --style=compressed",
-    "postinstall": "pnpm run build"
+    "build": "sass --load-path=node_modules app/static/scss/custom.scss app/static/css/custom.css --style=compressed"
   },
   "dependencies": {
     "bootstrap": "^5.3.8"

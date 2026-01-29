@@ -1,0 +1,14 @@
+# Core Flask dependencies
+Flask>=3.0.0
+Flask-SQLAlchemy>=3.1.1
+Flask-Migrate>=4.0.5
+Werkzeug>=3.0.0
+
+# Unit conversion for recipes
+Pint>=0.23
+
+# Database
+alembic>=1.13.0
+
+# WSGI server for production
+gunicorn>=21.2.0
