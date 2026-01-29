@@ -2,7 +2,7 @@ from marshmallow import fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from app.models.ingredient import Ingredient
-from app.schemas.recipeingredient import RecipeIngredientSchema
+from app.schemas.recipeingredient import RecipeIngredientSchema  # noqa: F401
 
 
 class IngredientSchema(SQLAlchemyAutoSchema):

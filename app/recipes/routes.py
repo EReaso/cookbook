@@ -1,9 +1,7 @@
-from flask import abort, flash, redirect, render_template, url_for
-
-from app.extensions import db
+from flask import render_template
 
 from . import bp
-from .models import *
+from .models import Recipe
 
 
 @bp.get("/")

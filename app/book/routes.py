@@ -1,10 +1,9 @@
 from itertools import groupby
 
-from flask import redirect, render_template, request, url_for
+from flask import render_template
 
 from app.book import bp
-from app.extensions import db
-from app.recipes.models import Ingredient, Recipe, RecipeIngredient
+from app.recipes.models import Recipe
 
 
 @bp.route("/book/")
