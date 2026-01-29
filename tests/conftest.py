@@ -3,8 +3,9 @@
 import os
 import sys
 import tempfile
-from pathlib import Path
 from importlib import import_module
+from pathlib import Path
+
 import pytest
 
 # Ensure repository root is on sys.path so `import app` works in tests

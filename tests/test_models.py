@@ -1,4 +1,5 @@
 """Tests for Recipe models."""
+
 from app.recipes.models import Ingredient, Recipe, RecipeIngredient
 
 
