@@ -8,7 +8,6 @@ A Flask-based web application for managing recipes with ingredients, images, and
 - Image upload and storage
 - Unit conversions for recipe ingredients
 - Ingredient density tracking for weight calculations
-- Pagination support for recipe listings
 
 ## Requirements
 
@@ -107,11 +106,13 @@ pytest tests/test_models.py
 ### Code Style
 
 This project follows **Black's opinionated code style**:
+
 - 4-space indentation
 - Line length: 120 characters
 - Double quotes for strings (with `skip-string-normalization` disabled by default)
 
 **Linting and Formatting:**
+
 - **Black**: Automatic code formatting
 - **isort**: Import sorting (configured to work with Black)
 - **flake8**: Style and quality linting
@@ -222,4 +223,4 @@ This project uses GitHub Actions for continuous integration:
 
 ## License
 
-This project is open source and available under the MIT License.
+This project is open source and available under the GPL 3.0 License.

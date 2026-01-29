@@ -1,13 +1,21 @@
 """Test configuration and fixtures."""
 
 import os
+import sys
 import tempfile
 from pathlib import Path
 
 import pytest
 
-from app import app as flask_app
-from app.extensions import db as _db
+# Ensure repository root is on sys.path so `import app` works in tests
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from importlib import import_module
+
+_app = import_module("app")
+_create = getattr(_app, "create_app", None)
+flask_app = _create() if callable(_create) else getattr(_app, "app")
+_db = import_module("app.extensions").db
 
 
 @pytest.fixture(scope="session")
@@ -71,15 +79,19 @@ def runner(app):
 @pytest.fixture
 def sample_recipe(db):
     """Create a sample recipe for testing."""
-    from app.recipes.models import Recipe
+    from app.recipes.models import Recipe, RecipeIngredient
 
-    recipe = Recipe(
-        slug="test-recipe",
-        name="Test Recipe",
-        directions="1. Do this\n2. Do that",
-        ingredients="2 cups flour\n1 cup sugar",
-    )
+    # Depend on the `sample_ingredient` fixture for a related ingredient
+    # (pytest will resolve this dependency automatically)
+    # Create the recipe and a linking RecipeIngredient using relationships
+    # so SQLAlchemy sets foreign keys correctly.
+    recipe = Recipe(slug="test-recipe", name="Test Recipe", directions="1. Do this\n2. Do that")
     db.session.add(recipe)
+    db.session.flush()
+
+    # create a minimal RecipeIngredient in tests via relationship assignment
+    ri = RecipeIngredient(list="main", amount=1.0, unit="cup", recipe=recipe, ingredient=sample_ingredient(db))
+    db.session.add(ri)
     db.session.commit()
     return recipe
 
@@ -89,11 +101,7 @@ def sample_ingredient(db):
     """Create a sample ingredient for testing."""
     from app.recipes.models import Ingredient
 
-    ingredient = Ingredient(
-        slug="test-ingredient",
-        name="Test Ingredient",
-        density=1.0,
-    )
+    ingredient = Ingredient(slug="test-ingredient", name="Test Ingredient", density=1.0)
     db.session.add(ingredient)
     db.session.commit()
     return ingredient
@@ -104,16 +112,11 @@ def sample_recipe_ingredient(db, sample_recipe, sample_ingredient):
     """Create a sample recipe-ingredient relationship for testing."""
     from app.recipes.models import RecipeIngredient
 
-    recipe_ingredient = RecipeIngredient(
-        list="main",
-        amount=2.0,
-        unit="cups",
-        recipe_slug=sample_recipe.slug,
-        ingredient_slug=sample_ingredient.slug,
-    )
-    db.session.add(recipe_ingredient)
+    # Create via relationships to ensure SQLAlchemy handles FK values
+    ri = RecipeIngredient(list="main", amount=2.0, unit="cups", recipe=sample_recipe, ingredient=sample_ingredient)
+    db.session.add(ri)
     db.session.commit()
-    return recipe_ingredient
+    return ri
 
 
 @pytest.fixture
