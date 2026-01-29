@@ -12,7 +12,7 @@ import sys
 import time
 from urllib.parse import urlparse
 
-db_url = os.environ.get("DATABASE_URL", "")
+db_url = os.environ["DATABASE_URL"]
 parsed = urlparse(db_url)
 
 if parsed.scheme not in ("postgres", "postgresql"):
@@ -26,14 +26,15 @@ print(f"Checking Postgres TCP connectivity at {host}:{port}...")
 
 import socket
 for attempt in range(1, 31):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(2)
     try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(2)
         sock.connect((host, port))
         sock.close()
         print(f"Postgres is reachable at {host}:{port}")
         sys.exit(0)
     except Exception as e:
+        sock.close()
         print(f"Attempt {attempt}/30: {e}")
         time.sleep(2)
 
