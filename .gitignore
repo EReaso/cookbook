@@ -722,7 +722,6 @@ nbdist/
 *.tmproj
 *.tmproject
 tmtags
-[_@]*
 *.mti
 *.dat
 *.dbs
