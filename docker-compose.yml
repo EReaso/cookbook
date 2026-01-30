@@ -21,7 +21,7 @@ services:
     container_name: cookbook-web
     environment:
       DATABASE_URL: postgresql://cookbook:${POSTGRES_PASSWORD:-cookbook_dev_password}@db:5432/cookbook
-      SECRET_KEY: ${SECRET_KEY:-dev-secret-change-in-production}
+      SECRET_KEY: ${SECRET_KEY:-}
       FLASK_APP: wsgi.py
     ports:
       - "5000:5000"
