@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% from "pagination.html" import pagination_widget %}
+
+{% block title %}
+    Cookbook Recipes
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Cookbook Recipes</h1>
+        <div class="row">{{ pagination_widget(pagination) }}</div>
+        {% for recipe in recipes %}
+        {% endfor %}
+    </div>
+{% endblock %}
