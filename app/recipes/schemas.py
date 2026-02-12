@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, PositiveInt
 
-from app.recipes.models import Ingredient, Recipe, RecipeIngredient
+from app.recipes.models import Ingredient, Recipe  # , RecipeIngredient
 
 
 class IngredientSchema(BaseModel):
@@ -8,7 +8,7 @@ class IngredientSchema(BaseModel):
     name: str = Field(max_length=50)
 
 
-class RecipeIngredient(BaseModel):
+class RecipeIngredientSchema(BaseModel):
     amount: PositiveInt | None = None
     unit: str | None = Field(max_length=20, default=None)
     list: str | None = Field(max_length=100, default=None)
@@ -16,7 +16,7 @@ class RecipeIngredient(BaseModel):
 
 
 class CreateRecipe(BaseModel):
-    recipe_ingredients: list[RecipeIngredient]
+    recipe_ingredients: list[RecipeIngredientSchema]
     directions: str
     name: str = Field(max_length=100)
     sidebar: str | None = None
@@ -31,7 +31,7 @@ class CreateRecipe(BaseModel):
 
 class RecipeOut(BaseModel):
     slug: str
-    recipe_ingredients: list[RecipeIngredient]
+    recipe_ingredients: list[RecipeIngredientSchema]
     directions: str
     name: str
     sidebar: str | None = None
