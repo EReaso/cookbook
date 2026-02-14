@@ -46,7 +46,7 @@ class Ingredient(db.Model):
     density = db.Column(db.Float, nullable=True)  # Use density in g/ml
 
 
-class RecipeIngredientSchema(db.Model):
+class RecipeIngredient(db.Model):
     list = db.Column(db.String(100), primary_key=True)
 
     amount = db.Column(db.Float)
