@@ -22,7 +22,7 @@ class CreateRecipe(BaseModel):
     name: str = Field(max_length=100)
     sidebar: str | None = None
 
-    def to_db(self -> Recipe:
+    def to_db(self) -> Recipe:
         # TODO: sanitize input and handle errors
         recipe = Recipe(**self.model_dump(mode="python", exclude={'recipe_ingredients'}, exclude_unset=True))
         for i in self.recipe_ingredients:
