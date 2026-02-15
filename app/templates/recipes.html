@@ -10,7 +10,13 @@
     <div class="container mt-4">
         <h1>Cookbook Recipes</h1>
         <div class="row">{{ pagination_widget(pagination) }}</div>
+        <div>
         {% for recipe in recipes %}
-        {% endfor %}
+        <a href="/book/{{ recipe.slug }}" class="stretched-link card">
+            <div class="card-body">
+            <h5 class="card-title">{{ recipe.name }}</h5>
+            </div>
+        </a>
+        {% endfor %}</div>
     </div>
 {% endblock %}

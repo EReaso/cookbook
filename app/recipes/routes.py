@@ -1,5 +1,5 @@
-from flask import abort  # , render_template, request
-
+from flask import abort, render_template, request
+from .models import Recipe
 from . import bp
 
 # from .models import Recipe
@@ -7,12 +7,11 @@ from . import bp
 
 @bp.get("/")
 def get_recipes():
-    # page = request.args.get("page", 1, type=int)
-    # per_page = request.args.get("per_page", 10, type=int)
-    # pagination = Recipe.query.paginate(page=page, per_page=per_page, error_out=False)
-    # recipes = pagination.items
-    return abort(405)
-    # return render_template("recipes.html", recipes=recipes, pagination=pagination)
+    page = request.args.get("page", 1, type=int)
+    per_page = request.args.get("per_page", 10, type=int)
+    pagination = Recipe.query.paginate(page=page, per_page=per_page, error_out=False)
+    recipes = pagination.items
+    return render_template("recipes.html", recipes=recipes, pagination=pagination)
 
 
 @bp.post("/")
