@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Cookbook Quickstart Script
 # This script sets up the development environment with Docker secrets
 
-set -e
+set -euo pipefail
 
 echo "🍳 Cookbook Quickstart Setup"
 echo "============================"
