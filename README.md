@@ -98,9 +98,21 @@ The easiest way to get started is with the quickstart script:
 This script will:
 - Create a `.env` file with generated SECRET_KEY
 - Set up Docker secrets for Postgres password (if Swarm mode is active)
-- Build and start all services
-- Run database migrations
-- Make the app available at `http://localhost:5000`
+- Provide you with the command to start the application
+
+After running the script, start the application with the provided command:
+
+```bash
+docker-compose up --build
+```
+
+Then in another terminal, run database migrations:
+
+```bash
+docker-compose exec web flask db upgrade
+```
+
+The application will be available at `http://localhost:5000`
 
 **Manual Setup (Alternative):**
 

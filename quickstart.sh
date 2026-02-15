@@ -98,49 +98,23 @@ else
     echo "   Then run this script again."
 fi
 
-# Step 4: Build and start services
-echo ""
-echo "🚀 Starting services with $COMPOSE_CMD..."
-$COMPOSE_CMD up --build -d
-
-# Wait for database to be ready
-echo ""
-echo "⏳ Waiting for database to be ready..."
-MAX_RETRIES=30
-RETRY_COUNT=0
-until $COMPOSE_CMD exec -T db pg_isready -U cookbook > /dev/null 2>&1; do
-    RETRY_COUNT=$((RETRY_COUNT + 1))
-    if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
-        echo "❌ Error: Database failed to become ready after $MAX_RETRIES attempts"
-        echo "   Check logs with: $COMPOSE_CMD logs db"
-        exit 1
-    fi
-    echo "   Attempt $RETRY_COUNT/$MAX_RETRIES..."
-    sleep 2
-done
-echo "✅ Database is ready"
-
-# Step 5: Run database migrations
-echo ""
-echo "🗄️  Running database migrations..."
-if ! $COMPOSE_CMD exec -T web flask db upgrade; then
-    echo "❌ Error: Database migrations failed"
-    echo "   Check logs with: $COMPOSE_CMD logs web"
-    echo "   You may need to run migrations manually: $COMPOSE_CMD exec web flask db upgrade"
-    exit 1
-fi
-echo "✅ Migrations completed successfully"
-
 echo ""
 echo "✨ Setup complete!"
 echo ""
 echo "📋 Summary:"
-echo "   • Environment file: .env"
-echo "   • Database: PostgreSQL (cookbook)"
-echo "   • Web app: http://localhost:5000"
+echo "   • Environment file: .env with generated SECRET_KEY"
+echo "   • Docker secret: postgres_password (if Swarm mode active)"
 echo ""
-echo "🎯 Next steps:"
-echo "   • Visit http://localhost:5000 to see your app"
+echo "🎯 To start the application, run:"
+echo ""
+echo "   $COMPOSE_CMD up --build"
+echo ""
+echo "   Then in another terminal, run migrations:"
+echo "   $COMPOSE_CMD exec web flask db upgrade"
+echo ""
+echo "   The app will be available at http://localhost:5000"
+echo ""
+echo "💡 Other useful commands:"
 echo "   • View logs: $COMPOSE_CMD logs -f"
 echo "   • Stop services: $COMPOSE_CMD down"
 echo "   • Remove data: $COMPOSE_CMD down -v"
