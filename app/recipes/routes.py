@@ -1,6 +1,7 @@
 from flask import abort, render_template, request
-from .models import Recipe
+
 from . import bp
+from .models import Recipe
 
 # from .models import Recipe
 
