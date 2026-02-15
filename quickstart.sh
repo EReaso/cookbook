@@ -77,8 +77,6 @@ else
     fi
 fi
 
-echo "Using password: $POSTGRES_PASSWORD"
-
 # Step 2: Check if running in Swarm mode
 if docker info 2>/dev/null | grep -q "Swarm: active"; then
     echo ""
