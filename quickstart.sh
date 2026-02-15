@@ -38,7 +38,12 @@ if [ ! -f .env ]; then
     
     # Generate a secure SECRET_KEY
     echo "🔐 Generating secure SECRET_KEY..."
-    SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_hex(32))" 2>/dev/null || python -c "import secrets; print(secrets.token_hex(32))")
+    SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_hex(32))" 2>/dev/null || python -c "import secrets; print(secrets.token_hex(32))" 2>/dev/null || echo "")
+    
+    if [ -z "$SECRET_KEY" ]; then
+        echo "❌ Error: Failed to generate SECRET_KEY. Please ensure Python 3 is installed."
+        exit 1
+    fi
     
     # Replace the SECRET_KEY placeholder in .env
     if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -57,7 +62,7 @@ fi
 # Step 2: Get or generate Postgres password
 echo ""
 echo "🔑 Setting up Postgres password..."
-POSTGRES_PASSWORD=$(grep "^POSTGRES_PASSWORD=" .env | cut -d '=' -f2)
+POSTGRES_PASSWORD=$(grep "^POSTGRES_PASSWORD=" .env | cut -d '=' -f2-)
 
 if [ -z "$POSTGRES_PASSWORD" ]; then
     echo "⚠️  Warning: POSTGRES_PASSWORD not found in .env, using default"
@@ -101,12 +106,30 @@ $COMPOSE_CMD up --build -d
 # Wait for database to be ready
 echo ""
 echo "⏳ Waiting for database to be ready..."
-sleep 5
+MAX_RETRIES=30
+RETRY_COUNT=0
+until $COMPOSE_CMD exec -T db pg_isready -U cookbook > /dev/null 2>&1; do
+    RETRY_COUNT=$((RETRY_COUNT + 1))
+    if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+        echo "❌ Error: Database failed to become ready after $MAX_RETRIES attempts"
+        echo "   Check logs with: $COMPOSE_CMD logs db"
+        exit 1
+    fi
+    echo "   Attempt $RETRY_COUNT/$MAX_RETRIES..."
+    sleep 2
+done
+echo "✅ Database is ready"
 
 # Step 5: Run database migrations
 echo ""
 echo "🗄️  Running database migrations..."
-$COMPOSE_CMD exec -T web flask db upgrade
+if ! $COMPOSE_CMD exec -T web flask db upgrade; then
+    echo "❌ Error: Database migrations failed"
+    echo "   Check logs with: $COMPOSE_CMD logs web"
+    echo "   You may need to run migrations manually: $COMPOSE_CMD exec web flask db upgrade"
+    exit 1
+fi
+echo "✅ Migrations completed successfully"
 
 echo ""
 echo "✨ Setup complete!"
