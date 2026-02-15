@@ -71,10 +71,12 @@ else
 fi
 
 # Read password from .env for Docker secret setup
+# This works for both newly created .env and pre-existing .env files
 POSTGRES_PASSWORD=$(grep "^POSTGRES_PASSWORD=" .env | cut -d '=' -f2-)
 
 if [ -z "$POSTGRES_PASSWORD" ]; then
     echo "Error: POSTGRES_PASSWORD not found in .env"
+    echo "Please ensure your .env file contains: POSTGRES_PASSWORD=your_password"
     exit 1
 fi
 
