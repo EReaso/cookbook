@@ -40,7 +40,7 @@ class CreateRecipe(BaseModel):
 
         db.session.add(recipe)
         db.session.commit()
-    
+
         return recipe
 
 
