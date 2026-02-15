@@ -68,13 +68,14 @@ if [ ! -f .env ]; then
     echo "Created .env with generated SECRET_KEY and POSTGRES_PASSWORD"
 else
     echo "Info: .env file already exists, skipping creation"
-    # Read existing password from .env
-    POSTGRES_PASSWORD=$(grep "^POSTGRES_PASSWORD=" .env | cut -d '=' -f2-)
-    
-    if [ -z "$POSTGRES_PASSWORD" ]; then
-        echo "Warning: POSTGRES_PASSWORD not found in .env"
-        exit 1
-    fi
+fi
+
+# Read password from .env for Docker secret setup
+POSTGRES_PASSWORD=$(grep "^POSTGRES_PASSWORD=" .env | cut -d '=' -f2-)
+
+if [ -z "$POSTGRES_PASSWORD" ]; then
+    echo "Error: POSTGRES_PASSWORD not found in .env"
+    exit 1
 fi
 
 # Step 2: Check if running in Swarm mode
