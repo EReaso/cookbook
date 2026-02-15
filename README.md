@@ -87,9 +87,37 @@ pnpm run build
 
 ## Running the Application
 
-### Option 1: Docker Compose (Recommended for Testing)
+### Option 1: Quick Start with Docker Compose (Recommended)
 
-Docker Compose provides a complete environment with PostgreSQL database:
+The easiest way to get started is with the quickstart script:
+
+```bash
+./quickstart.sh
+```
+
+This script will:
+- Create a `.env` file with generated SECRET_KEY and POSTGRES_PASSWORD
+- Set up Docker secrets for Postgres password (if Swarm mode is active)
+- In non-Swarm mode, the password from `.env` will be used
+- Provide you with the command to start the application
+
+After running the script, start the application with the provided command:
+
+```bash
+docker-compose up --build
+```
+
+Then in another terminal, run database migrations:
+
+```bash
+docker-compose exec web flask db upgrade
+```
+
+The application will be available at `http://localhost:5000`
+
+**Manual Setup (Alternative):**
+
+If you prefer manual setup or the script doesn't work for your environment:
 
 1. **Set up environment variables:**
 
@@ -99,7 +127,19 @@ cp .env.example .env
 python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
-2. **Start the application:**
+2. **Set up Docker secrets (optional, for Swarm mode):**
+
+```bash
+# Initialize Docker Swarm (if not already done)
+docker swarm init
+
+# Create the Postgres password secret
+echo "your_secure_password" | docker secret create postgres_password -
+```
+
+For non-Swarm mode, the password from `.env` will be used automatically.
+
+3. **Start the application:**
 
 ```bash
 docker-compose up --build
@@ -107,13 +147,13 @@ docker-compose up --build
 
 The application will be available at `http://localhost:5000`
 
-3. **Run database migrations (in a new terminal):**
+4. **Run database migrations (in a new terminal):**
 
 ```bash
 docker-compose exec web flask db upgrade
 ```
 
-4. **Stop the application:**
+5. **Stop the application:**
 
 ```bash
 docker-compose down
@@ -124,6 +164,15 @@ To remove volumes (including database data):
 ```bash
 docker-compose down -v
 ```
+
+**About Docker Secrets:**
+
+This application supports Docker secrets for enhanced security. When running in Docker Swarm mode, the Postgres password is stored as a Docker secret instead of plain text in environment variables. The secret is marked as `external: true` to prevent accidentally committing secrets to the repository.
+
+- **With Swarm mode:** Uses Docker secret `postgres_password`
+- **Without Swarm mode:** Falls back to `POSTGRES_PASSWORD` from `.env`
+
+See `.secrets/POSTGRES_PASSWORD.example` for the example secret format.
 
 ### Option 2: Local Development Server
 
