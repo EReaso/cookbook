@@ -96,8 +96,9 @@ The easiest way to get started is with the quickstart script:
 ```
 
 This script will:
-- Create a `.env` file with generated SECRET_KEY
+- Create a `.env` file with generated SECRET_KEY and POSTGRES_PASSWORD
 - Set up Docker secrets for Postgres password (if Swarm mode is active)
+- In non-Swarm mode, the password from `.env` will be used
 - Provide you with the command to start the application
 
 After running the script, start the application with the provided command:
