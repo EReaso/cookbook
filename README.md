@@ -131,13 +131,16 @@ python -c "import secrets; print(secrets.token_hex(32))"
 
 ```bash
 # Create the password file from the example (default password is cookbook_dev_password)
+mkdir -p .secrets
 echo "cookbook_dev_password" > .secrets/postgres_password
+chmod 600 .secrets/postgres_password
 
 # Or use a custom secure password
 echo "your_secure_password" > .secrets/postgres_password
+chmod 600 .secrets/postgres_password
 ```
 
-The `.secrets/postgres_password` file is used for Docker Compose secrets and is ignored by git.
+The `.secrets/postgres_password` file is used for Docker Compose secrets and is ignored by git. File permissions are set to 600 to restrict access to the owner only.
 
 3. **Start the application:**
 

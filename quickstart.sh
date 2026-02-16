@@ -86,10 +86,12 @@ echo "Setting up Docker secrets file..."
 
 # Create .secrets directory if it doesn't exist
 mkdir -p .secrets
+chmod 700 .secrets
 
 # Create the password file
 echo "$POSTGRES_PASSWORD" > .secrets/postgres_password
-echo "Created .secrets/postgres_password file"
+chmod 600 .secrets/postgres_password
+echo "Created .secrets/postgres_password file with secure permissions"
 
 echo ""
 echo "Setup complete!"
