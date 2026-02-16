@@ -127,17 +127,20 @@ cp .env.example .env
 python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
-2. **Set up Docker secrets (optional, for Swarm mode):**
+2. **Set up the password secret file:**
 
 ```bash
-# Initialize Docker Swarm (if not already done)
-docker swarm init
+# Create the password file from the example (default password is cookbook_dev_password)
+mkdir -p .secrets
+echo "cookbook_dev_password" > .secrets/postgres_password
+chmod 600 .secrets/postgres_password
 
-# Create the Postgres password secret
-echo "your_secure_password" | docker secret create postgres_password -
+# Or use a custom secure password
+echo "your_secure_password" > .secrets/postgres_password
+chmod 600 .secrets/postgres_password
 ```
 
-For non-Swarm mode, the password from `.env` will be used automatically.
+The `.secrets/postgres_password` file is used for Docker Compose secrets and is ignored by git. File permissions are set to 600 to restrict access to the owner only.
 
 3. **Start the application:**
 
@@ -167,10 +170,11 @@ docker-compose down -v
 
 **About Docker Secrets:**
 
-This application supports Docker secrets for enhanced security. When running in Docker Swarm mode, the Postgres password is stored as a Docker secret instead of plain text in environment variables. The secret is marked as `external: true` to prevent accidentally committing secrets to the repository.
+This application uses file-based Docker secrets for enhanced security. The Postgres password is stored in `.secrets/postgres_password` file, which is shared with containers via Docker secrets mechanism. This file is excluded from version control via `.gitignore` to prevent accidentally committing secrets to the repository.
 
-- **With Swarm mode:** Uses Docker secret `postgres_password`
-- **Without Swarm mode:** Falls back to `POSTGRES_PASSWORD` from `.env`
+The password file approach works with both:
+- **Regular Docker Compose mode:** Uses file-based secrets (default)
+- **Docker Swarm mode:** Also compatible with file-based secrets
 
 See `.secrets/POSTGRES_PASSWORD.example` for the example secret format.
 

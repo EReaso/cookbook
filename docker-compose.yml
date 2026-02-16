@@ -43,4 +43,4 @@ volumes:
 
 secrets:
   postgres_password:
-    external: true
+    file: ./.secrets/postgres_password
