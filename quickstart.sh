@@ -80,39 +80,23 @@ if [ -z "$POSTGRES_PASSWORD" ]; then
     exit 1
 fi
 
-# Step 2: Check if running in Swarm mode
-if docker info 2>/dev/null | grep -q "Swarm: active"; then
-    echo ""
-    echo "Docker Swarm detected - setting up Docker secret..."
-    
-    # Check if secret already exists
-    if docker secret ls --format "{{.Name}}" | grep -q "^postgres_password$"; then
-        echo "Info: Docker secret 'postgres_password' already exists"
-        read -p "Do you want to recreate it? (y/N): " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            echo "Removing existing secret..."
-            docker secret rm postgres_password || true
-            echo "$POSTGRES_PASSWORD" | docker secret create postgres_password -
-            echo "Recreated Docker secret 'postgres_password'"
-        fi
-    else
-        echo "$POSTGRES_PASSWORD" | docker secret create postgres_password -
-        echo "Created Docker secret 'postgres_password'"
-    fi
-else
-    echo ""
-    echo "Info: Docker Swarm not active - will use environment variables from .env"
-    echo "To use Docker secrets, initialize swarm with: docker swarm init"
-    echo "Then run this script again."
-fi
+# Step 2: Create the password file for Docker secrets
+echo ""
+echo "Setting up Docker secrets file..."
+
+# Create .secrets directory if it doesn't exist
+mkdir -p .secrets
+
+# Create the password file
+echo "$POSTGRES_PASSWORD" > .secrets/postgres_password
+echo "Created .secrets/postgres_password file"
 
 echo ""
 echo "Setup complete!"
 echo ""
 echo "Summary:"
 echo "  - Environment file: .env with generated SECRET_KEY and POSTGRES_PASSWORD"
-echo "  - Docker secret: postgres_password (if Swarm mode active)"
+echo "  - Docker secret file: .secrets/postgres_password"
 echo ""
 echo "To start the application, run:"
 echo ""
