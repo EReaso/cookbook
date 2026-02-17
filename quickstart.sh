@@ -93,24 +93,43 @@ echo "$POSTGRES_PASSWORD" > .secrets/postgres_password
 chmod 600 .secrets/postgres_password
 echo "Created .secrets/postgres_password file with secure permissions"
 
+# Step 3: Install Node.js dependencies and build SCSS if not in Docker
+echo ""
+echo "Checking for local Node.js setup..."
+if command -v pnpm &> /dev/null; then
+    echo "Building SCSS to CSS..."
+    pnpm install
+    pnpm run build
+    echo "SCSS built successfully"
+else
+    echo "Info: pnpm not found locally. SCSS will be built during Docker build."
+fi
+
+# Step 4: Build and start Docker containers
+echo ""
+echo "Building and starting Docker containers..."
+$COMPOSE_CMD up --build -d
+
+# Wait for services to be ready
+echo ""
+echo "Waiting for services to start..."
+sleep 5
+
 echo ""
 echo "Setup complete!"
 echo ""
 echo "Summary:"
 echo "  - Environment file: .env with generated SECRET_KEY and POSTGRES_PASSWORD"
 echo "  - Docker secret file: .secrets/postgres_password"
+echo "  - SCSS assets: Built and ready"
+echo "  - Database: Automatically upgraded on container startup"
+echo "  - Services: Running in background"
 echo ""
-echo "To start the application, run:"
-echo ""
-echo "  $COMPOSE_CMD up --build"
-echo ""
-echo "Then in another terminal, run migrations:"
-echo "  $COMPOSE_CMD exec web flask db upgrade"
-echo ""
-echo "The app will be available at http://localhost:5000"
+echo "The application is now ready for production at http://localhost:5000"
 echo ""
 echo "Other useful commands:"
 echo "  - View logs: $COMPOSE_CMD logs -f"
 echo "  - Stop services: $COMPOSE_CMD down"
 echo "  - Remove data: $COMPOSE_CMD down -v"
+echo "  - Rebuild: $COMPOSE_CMD up --build"
 echo ""
