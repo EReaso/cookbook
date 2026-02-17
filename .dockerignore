@@ -45,11 +45,9 @@ LICENSE
 tests
 requirements-dev.txt
 
-# Node.js
+# Node.js - only exclude node_modules and package-lock
 node_modules
-package.json
 package-lock.json
-pnpm-lock.yaml
 
 # Environment
 .env
