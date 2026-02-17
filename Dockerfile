@@ -5,15 +5,25 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
-# System deps for psycopg2
+# System deps for psycopg2 and Node.js
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends gcc libpq-dev build-essential git && \
+    apt-get install -y --no-install-recommends gcc libpq-dev build-essential git curl && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    corepack enable && \
+    corepack prepare pnpm@10.18.1 --activate && \
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
+
 COPY . .
+
+# Build SCSS to CSS
+RUN pnpm run build
 
 RUN chmod +x /app/entrypoint.sh
 
