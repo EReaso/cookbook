@@ -37,9 +37,11 @@ services:
       - ./app:/app/app
       - ./migrations:/app/migrations
       - ./wsgi.py:/app/wsgi.py
+      - instance_data:/app/instance
 
 volumes:
   postgres_data:
+  instance_data:
 
 secrets:
   postgres_password:
