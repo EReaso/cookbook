@@ -791,8 +791,6 @@ CopilotDiffState
 .github/copilot/CopilotDiffState
 
 # Generated CSS files (built from SCSS)
-app/static/css/custom.css
-app/static/css/custom.css.map
 app/static/css/*.css
 app/static/css/*.css.map
 
