@@ -5,11 +5,14 @@ services:
     environment:
       POSTGRES_DB: cookbook
       POSTGRES_USER: cookbook
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cookbook_dev_password}
+      # POSTGRES_PASSWORD is provided via Docker secret `postgres_password`
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    secrets:
+      - postgres_password
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U cookbook"]
       interval: 5s
@@ -20,7 +23,7 @@ services:
     build: .
     container_name: cookbook-web
     environment:
-      DATABASE_URL: postgresql://cookbook:${POSTGRES_PASSWORD:-cookbook_dev_password}@db:5432/cookbook
+      DATABASE_URL: postgresql://cookbook:${POSTGRES_PASSWORD}@db:5432/cookbook
       SECRET_KEY: ${SECRET_KEY:-}
       FLASK_APP: wsgi.py
     ports:
@@ -28,6 +31,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    secrets:
+      - postgres_password
     volumes:
       - ./app:/app/app
       - ./migrations:/app/migrations
@@ -35,3 +40,7 @@ services:
 
 volumes:
   postgres_data:
+
+secrets:
+  postgres_password:
+    file: ./.secrets/postgres_password
