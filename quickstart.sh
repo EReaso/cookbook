@@ -105,31 +105,23 @@ else
     echo "Info: pnpm not found locally. SCSS will be built during Docker build."
 fi
 
-# Step 4: Build and start Docker containers
-echo ""
-echo "Building and starting Docker containers..."
-$COMPOSE_CMD up --build -d
-
-# Wait for services to be ready
-echo ""
-echo "Waiting for services to start..."
-sleep 5
-
 echo ""
 echo "Setup complete!"
 echo ""
 echo "Summary:"
 echo "  - Environment file: .env with generated SECRET_KEY and POSTGRES_PASSWORD"
 echo "  - Docker secret file: .secrets/postgres_password"
-echo "  - SCSS assets: Built and ready"
-echo "  - Database: Automatically upgraded on container startup"
-echo "  - Services: Running in background"
+echo "  - SCSS assets: Built (if pnpm available locally)"
 echo ""
-echo "The application is now running at http://localhost:5000"
+echo "To start the application, run:"
+echo ""
+echo "  $COMPOSE_CMD up --build"
+echo ""
+echo "The database will be automatically upgraded on container startup."
+echo "The app will be available at http://localhost:5000"
 echo ""
 echo "Other useful commands:"
 echo "  - View logs: $COMPOSE_CMD logs -f"
 echo "  - Stop services: $COMPOSE_CMD down"
 echo "  - Remove data: $COMPOSE_CMD down -v"
-echo "  - Rebuild: $COMPOSE_CMD up --build"
 echo ""
