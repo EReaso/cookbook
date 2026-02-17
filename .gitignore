@@ -791,7 +791,8 @@ CopilotDiffState
 .github/copilot/CopilotDiffState
 
 # Generated CSS files (built from SCSS)
-app/static/css/custom.css
+app/static/css/*.css
+app/static/css/*.css.map
 
 # Docker secrets (keep only examples)
 .secrets/postgres_password
