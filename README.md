@@ -162,11 +162,20 @@ docker-compose exec web flask db upgrade
 docker-compose down
 ```
 
-To remove volumes (including database data):
+To remove volumes (including database data and uploaded images):
 
 ```bash
 docker-compose down -v
 ```
+
+**Data Persistence:**
+
+The application uses Docker volumes to persist data across container restarts:
+
+- **`postgres_data`**: PostgreSQL database data
+- **`instance_data`**: Flask instance directory, which includes uploaded image files stored in `/app/instance/storage`
+
+These volumes ensure that your recipes, ingredients, and uploaded images are preserved when you stop and restart the containers. Only running `docker-compose down -v` will remove these volumes and delete the data.
 
 **About Docker Secrets:**
 
