@@ -1,5 +1,5 @@
 {
-  "name": "cookbook2",
+  "name": "cookbook",
   "version": "1.0.0",
   "description": "Flask project with Bootstrap 5.3 and custom SCSS",
   "main": "index.js",
