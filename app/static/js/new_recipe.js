@@ -22,7 +22,7 @@ function create_ingredient() {
 
     clone.classList.remove("d-none")
     clone.setAttribute("id", "")
-    clone.setAttribute("data-ingredient", crypto.randomUUID())
+    clone.setAttribute("data-ingredient", Math.random().toString(36).substring(2, 15)) // Generate a random string as a temporary UUID for the ingredient
     document.querySelector("#ingredient-select").appendChild(clone)
 
     document.querySelector("#ingredients").insertBefore(clone, template)
