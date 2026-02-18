@@ -93,12 +93,25 @@ echo "$POSTGRES_PASSWORD" > .secrets/postgres_password
 chmod 600 .secrets/postgres_password
 echo "Created .secrets/postgres_password file with secure permissions"
 
+# Step 3: Install Node.js dependencies and build SCSS if not in Docker
+echo ""
+echo "Checking for local Node.js setup..."
+if command -v pnpm &> /dev/null; then
+    echo "Building SCSS to CSS..."
+    pnpm install
+    pnpm run build
+    echo "SCSS built successfully"
+else
+    echo "Info: pnpm not found locally. SCSS will be built during Docker build."
+fi
+
 echo ""
 echo "Setup complete!"
 echo ""
 echo "Summary:"
 echo "  - Environment file: .env with generated SECRET_KEY and POSTGRES_PASSWORD"
 echo "  - Docker secret file: .secrets/postgres_password"
+echo "  - SCSS assets: Built (if pnpm available locally)"
 echo ""
 echo "To start the application, run:"
 echo ""
