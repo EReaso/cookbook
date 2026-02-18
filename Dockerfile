@@ -22,8 +22,6 @@ RUN pnpm install
 
 COPY . .
 
-# Build SCSS to CSS
-RUN pnpm run build
 
 RUN chmod +x /app/entrypoint.sh
 
