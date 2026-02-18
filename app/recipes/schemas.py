@@ -1,8 +1,9 @@
 import re
 
+from pydantic import BaseModel, Field, PositiveInt
+
 from app.extensions import db
 from app.recipes.models import Ingredient, Recipe, RecipeIngredient
-from pydantic import BaseModel, Field, PositiveInt
 
 
 class IngredientSchema(BaseModel):
