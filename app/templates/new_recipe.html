@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Create a Recipe{% endblock %}
+
+{% block body %}
+<form class="container mt-4 d-flex flex-column flex-wrap gap-3">
+    <h1>Create a Recipe</h1>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title mb-3">Recipe Metadata</h3>
+            <p class="card-text">Inputs are optional</p></div>
+        <div class="form-group d-flex flex-column gap-3" id="metadata">
+            <ul class="list-group list-group-flush input_container">
+                <li class="input_row list-group-item d-flex justify-content-between align-content-center">
+                    <label class="form-label flex-grow-1 me-md-5 me-sm-4 me-3 text-nowrap" for="title">Title</label>
+                    <input class="form-control"
+                           id="title" name="title"/>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <!--		INGREDIENTS           -->
+    <div class="card">
+        <div class="card-body"><h3 class="card-title">Ingredients</h3>
+            <p class="card-text">Leave units blank for whole quantities, as well as the amount for small quantities like
+                salt and vanilla extract. </p></div>
+        <ol class="list-group list-group-flush ingredient_container" id="ingredients">
+            <!-- TODO: Responsive gap -->
+
+
+            <li class="d-none ingredient_row gap-lg-3 gap-1 gap-md-2 list-group-item d-flex align-content-center flex-nowrap"
+                id="ingredient_template">
+				<span class="col-md-2 col-1 flex-shrink-1">
+				<input class="form-control" title="Amount" type="number"><small class="form-text">Amount</small></span>
+                <span class="col-2 flex-shrink-1"><input class="form-control col" title="Unit" type="text">
+					<small class="form-text">Unit</small></span>
+                <span class="flex-grow-1"><input class="form-control" name="ingredient_slug" title="Ingredient"
+                                                 type="text">
+					<small class="form-text">Ingredient Slug</small></span>
+                <button aria-label="Delete Ingredient" class="btn btn-danger delete-parent" type="button"><i
+                        class="bi bi-trash"></i></button>
+            </li>
+
+            <li class="list-group-item">
+                <button aria-label="Add Ingredient" class="btn btn-primary" id="create-ingredient-button" type="button">
+                    <i class="bi bi-plus-lg"></i></button>
+            </li>
+        </ol>
+
+    </div>
+
+
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title"><label for="direction-editor">Recipe Directions</label></h3>
+            <p class="card-text">Markdown is supported. Please do not include a title or description. </p>
+            <div class="card" id="direction-editor-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3 align-items-center">
+						<span class="d-flex flex-row gap-2 align-items-center" id="insert-ingredient-container">
+							<span class="flex-shrink-0">Insert Ingredient Reference:</span>
+							<select aria-label="Select an ingredient to insert."
+                                    class="form-select me-1 flex-shrink-1 flex-grow-0" id="ingredient-select"><option>Add an Ingredient to Insert</option></select>
+							<button aria-label="Insert the remaining quantity of an ingredient."
+                                    class="btn btn-danger fst-italic flex-lg-shrink-0"
+                                    data-js-template="remaining ingredient"
+                                    disabled type="button">Remaining (Ingredient)</button>
+							<button class="btn btn-warning fst-italic flex-lg-shrink-0"
+                                    data-js-template="1 Unit ingredient"
+                                    disabled type="button">(Amount) (Ingredient)</button>
+						</span>
+                        <button aria-label="Toggle editor fullscreen" class="btn" id="direction-editor-fullscreen"
+                                type="button"><i class="bi bi-arrows-fullscreen"></i></button>
+                    </div>
+                    <textarea id="direction-editor" name="directions"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="{{ url_for('static', filename='js/new_recipe.js') }}"></script>
+{% endblock %}

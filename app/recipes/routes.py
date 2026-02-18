@@ -1,9 +1,8 @@
-from flask import abort, render_template, request
+from flask import abort, render_template, request, redirect
 
 from . import bp
 from .models import Recipe
-
-# from .models import Recipe
+from .schemas import CreateRecipe
 
 
 @bp.get("/")
@@ -15,12 +14,24 @@ def get_recipes():
     return render_template("recipes.html", recipes=recipes, pagination=pagination)
 
 
-@bp.post("/")
+@bp.get("/new/")
+def new_recipe():
+    return render_template("new_recipe.html")
+
+
+@bp.post("/new/")
 def post_recipe():
-    return abort(405)
+    try:
+        data = CreateRecipe().model_validate_json(request.get_json())
+    except ValidationError:
+        return abort(400, "Invalid input")
+
+    recipe = data.to_db()
+
+    return redirect(url_for("recipes.get_recipe", slug=recipe.slug))
 
 
-@bp.get("/<slug>/")
+@bp.get("/get/<slug>/")
 def get_recipe(slug):
     return abort(405)
     # recipe = Recipe.query.filter_by(slug=slug).first_or_404()

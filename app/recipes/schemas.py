@@ -1,7 +1,8 @@
-from pydantic import BaseModel, Field, PositiveInt
+import re
 
 from app.extensions import db
 from app.recipes.models import Ingredient, Recipe, RecipeIngredient
+from pydantic import BaseModel, Field, PositiveInt
 
 
 class IngredientSchema(BaseModel):
@@ -20,11 +21,14 @@ class CreateRecipe(BaseModel):
     recipe_ingredients: list[RecipeIngredientSchema]
     directions: str
     name: str = Field(max_length=100)
+    slug: str | None = Field(default=None, max_length=100, exclude=True)
     sidebar: str | None = None
 
     def to_db(self) -> Recipe:
         # TODO: sanitize input and handle errors
         recipe = Recipe(**self.model_dump(mode="python", exclude={'recipe_ingredients'}, exclude_unset=True))
+        recipe.slug = re.sub(recipe.name.lower(), "[^_a-z0-9]/g", "_")
+
         for i in self.recipe_ingredients:
             if not (ingredient := Ingredient.query.get(i.ingredient.slug)):
                 ingredient = Ingredient(**i.ingredient.model_dump(mode="python", exclude_unset=True))
