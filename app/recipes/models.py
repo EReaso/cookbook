@@ -13,6 +13,13 @@ class Recipe(db.Model):
 
     name = db.Column(db.String(100), nullable=False)
 
+    cook_time = db.Column(db.Float(), nullable=True)
+    prep_time = db.Column(db.Float(), nullable=True)
+
+    cook_temp = db.Column(db.Float(), nullable=True)
+
+    servings = db.Column(db.Integer(), nullable=True)
+
     # TODO: Add Users
     directions = db.Column(db.Text)
 
@@ -34,7 +41,7 @@ class Recipe(db.Model):
 
     @property
     def parsed_directions(self):
-        return
+        return "not implemented yet"
 
 
 class Ingredient(db.Model):
