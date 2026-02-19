@@ -19,11 +19,22 @@ class RecipeIngredientSchema(BaseModel):
 
 
 class CreateRecipe(BaseModel):
-    recipe_ingredients: list[RecipeIngredientSchema]
-    directions: str
-    name: str = Field(max_length=100)
     slug: str | None = Field(default=None, max_length=100, exclude=True)
+
+    name: str = Field(max_length=100)
+
+    cook_time: float | None = None
+    prep_time: float | None = None
+
+    cook_temp: float | None = None
+
+    servings: int | None = None
+
+    directions: str
+
     sidebar: str | None = None
+
+    recipe_ingredients: list[RecipeIngredientSchema]
 
     def to_db(self) -> Recipe:
         # TODO: sanitize input and handle errors
