@@ -1,4 +1,11 @@
-const inputs = [["Slug", "slug", "text"], ["Cook Time (minutes)", "cook_time", "number"], ["Cook Temp", "cook_temp", "number"], ["Prep Time (minutes)", "prep_time", "number"], ["Servings", "servings", "number"]]
+const inputs = [
+    // Label, name/id, type
+    ["Slug", "slug", "text"],
+    ["Cook Time (minutes)", "cook_time", "number"],
+    ["Cook Temp", "cook_temp", "number"],
+    ["Prep Time (minutes)", "prep_time", "number"],
+    ["Servings", "servings", "number"]
+]
 
 for (let i of inputs) {
     let input = document.querySelector(".input_row").cloneNode(true)
@@ -58,25 +65,27 @@ document.querySelector("#direction-editor-fullscreen").addEventListener("click",
 const easyMDE = new EasyMDE({uploadImage: true, inputStyle: "contenteditable"})
 const cm = easyMDE.codemirror
 
-document.querySelectorAll("#insert-ingredient-container button[data-js-template]").forEach(btn =>
-    btn.addEventListener("click", () => {
-        const select = document.querySelector("#ingredient-select")
-        const selectedOption = select?.selectedOptions?.[0]
-        const ingredientRow = selectedOption
-            ? document.querySelector(`[data-ingredient="${selectedOption.getAttribute("data-ingredient")}"]`)
-            : null
-        const ingredient = selectedOption?.value || ""
-        cm.replaceSelection(`:: ${btn.getAttribute("data-js-template").replace("ingredient", ingredient)} ::`)
-    })
-)
+document.querySelectorAll("#insert-ingredient-container button[data-js-template]").forEach(btn => btn.addEventListener("click", () => {
+    const select = document.querySelector("#ingredient-select")
+    const selectedOption = select?.selectedOptions?.[0]
+    const ingredientRow = selectedOption ? document.querySelector(`[data-ingredient="${selectedOption.getAttribute("data-ingredient")}"]`) : null
+    const ingredient = selectedOption?.value || ""
+    cm.replaceSelection(`:: ${btn.getAttribute("data-js-template").replace("ingredient", ingredient)} ::`)
+}))
 
 function generate_ingredient_options() {
-    const ingredients = document.querySelectorAll("#ingredients li:has(span>input[value])")
+    const ingredients = Array.from(document.querySelectorAll("#ingredients li"))
+        .filter(i => !i.classList.contains("d-none") && i.querySelector('span input[name="ingredient_slug"]') && i.querySelector('span input[name="ingredient_slug"]').value.trim() !== "")
     const options = document.querySelector("#ingredient-select")
     options.innerHTML = ""
 
-    if (ingredients.length !== 0) {
+    if (ingredients.length > 0) {
+        options.disabled = false
         document.querySelectorAll("#insert-ingredient-container button").forEach(btn => btn.disabled = false)
+    } else {
+        options.disabled = true
+        document.querySelectorAll("#insert-ingredient-container button").forEach(btn => btn.disabled = true)
+        options.innerHTML = "<option>Add an Ingredient to Insert</option>"
     }
 
     for (let i of ingredients) {
