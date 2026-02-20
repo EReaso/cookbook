@@ -8,41 +8,41 @@
 {% endblock %}
 
 {% block body %}
-    <form class="container mt-4 d-flex flex-column flex-wrap gap-3">
+    <div class="container mt-4 d-flex flex-column flex-wrap gap-3">
         <h1>Create a Recipe</h1>
-        <div class="card">
+        <form class="card" id="recipe-metadata">
             <div class="card-body">
                 <h3 class="card-title mb-3">Recipe Metadata</h3>
                 <p class="card-text">Inputs are optional</p></div>
             <div class="form-group d-flex flex-column gap-3" id="metadata">
-                <ul class="list-group list-group-flush input_container">
-                    <li class="input_row list-group-item d-flex justify-content-between align-content-center">
-                        <label class="form-label flex-grow-1 me-md-5 me-sm-4 me-3 text-nowrap" for="title">Title</label>
+                <ul class="list-group list-group-flush input-container">
+                    <li class="input-row list-group-item d-flex justify-content-between align-content-center">
+                        <label class="form-label flex-grow-1 me-md-5 me-sm-4 me-3 text-nowrap" for="name">Title</label>
                         <input class="form-control"
-                               id="title" name="title"/>
+                               id="title" name="name"/>
                     </li>
                 </ul>
             </div>
-        </div>
+        </form>
 
 
         <!--		INGREDIENTS           -->
-        <div class="card">
+        <form class="card" id="ingredients">
             <div class="card-body"><h3 class="card-title">Ingredients</h3>
                 <p class="card-text">Leave units blank for whole quantities, as well as the amount for small quantities
                     like
                     salt and vanilla extract. </p></div>
-            <ol class="list-group list-group-flush ingredient_container" id="ingredients">
+            <ol class="list-group list-group-flush ingredient-container" id="ingredients">
                 <!-- TODO: Responsive gap -->
 
 
-                <li class="d-none ingredient_row gap-lg-3 gap-1 gap-md-2 list-group-item d-flex align-content-center flex-nowrap"
-                    id="ingredient_template">
+                <li class="d-none ingredient-row gap-lg-3 gap-1 gap-md-2 list-group-item d-flex align-content-center flex-nowrap"
+                    id="ingredient-template">
 				<span class="col-md-2 col-1 flex-shrink-1">
 				<input class="form-control" title="Amount" type="number"><small class="form-text">Amount</small></span>
                     <span class="col-2 flex-shrink-1"><input class="form-control col" title="Unit" type="text">
 					<small class="form-text">Unit</small></span>
-                    <span class="flex-grow-1"><input class="form-control" name="ingredient_slug" title="Ingredient"
+                    <span class="flex-grow-1"><input class="form-control" name="ingredient-slug" title="Ingredient"
                                                      type="text">
 					<small class="form-text">Ingredient Slug</small></span>
                     <button aria-label="Delete this ingredient" class="btn btn-danger delete-parent" type="button"><i
@@ -56,7 +56,7 @@
                 </li>
             </ol>
 
-        </div>
+        </form>
 
 
         <div class="card">
@@ -86,7 +86,9 @@
                 </div>
             </div>
         </div>
-    </form>
+
+        <button class="btn button-primary" id="submit">Submit</button>
+    </div>
 
     <script src="{{ url_for('static', filename='js/new_recipe.js') }}"></script>
 {% endblock %}

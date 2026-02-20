@@ -8,13 +8,13 @@ const inputs = [
 ]
 
 for (let i of inputs) {
-    let input = document.querySelector(".input_row").cloneNode(true)
+    let input = document.querySelector(".input-row").cloneNode(true)
     input.querySelector("label").innerText = i[0]
     input.querySelector("input").setAttribute("name", i[1])
     input.querySelector("input").setAttribute("id", i[1])
     input.querySelector("input").setAttribute("type", i[2])
     input.querySelector("label").setAttribute("for", i[1])
-    document.querySelector(".input_container").appendChild(input)
+    document.querySelector(".input-container").appendChild(input)
 }
 
 // Disable slug input and auto-update on title change
@@ -24,7 +24,7 @@ document.querySelector("#title").addEventListener("input", (e) => {
 })
 
 function create_ingredient(doFocus = true) {
-    const template = document.querySelector("#ingredient_template")
+    const template = document.querySelector("#ingredient-template")
     let clone = template.cloneNode(true)
 
     clone.classList.remove("d-none")
@@ -56,7 +56,7 @@ function delete_ingredient(row) {
     const option = document.querySelector(`#ingredient-select option[data-ingredient="${uuid}"]`)
     if (option) option.remove()
 
-    if (document.querySelectorAll("#ingredients li:not(#ingredient_template)").length === 0) {
+    if (document.querySelectorAll("#ingredients li:not(#ingredient-template)").length === 0) {
         document.querySelector("#ingredient-select").innerHTML = "<option>Add an Ingredient to Insert</option>"
         document.querySelector("#ingredient-select").disabled = true
         document.querySelectorAll("#insert-ingredient-container button").forEach(btn => btn.disabled = true)
@@ -73,7 +73,7 @@ document.querySelector("#direction-editor-fullscreen").addEventListener("click",
     document.fullscreenElement ? document.exitFullscreen() : document.querySelector("#direction-editor-card").requestFullscreen()
 })
 
-const easyMDE = new EasyMDE({uploadImage: true, inputStyle: "contenteditable"})
+const easyMDE = new EasyMDE({uploadImage: false, inputStyle: "contenteditable"})
 const cm = easyMDE.codemirror
 
 document.querySelectorAll("#insert-ingredient-container button[data-js-template]").forEach(btn => btn.addEventListener("click", () => {
@@ -100,8 +100,27 @@ function generate_ingredient_options() {
     }
 
     for (let i of ingredients) {
-        const ingredient_slug = i.querySelector('span input[name="ingredient_slug"]').value
+        const ingredient_slug = i.querySelector('span input[name="ingredient-slug"]').value
         const option = options.appendChild(new Option(ingredient_slug, ingredient_slug))
         option.setAttribute("data-ingredient", i.getAttribute("data-ingredient"))
     }
+}
+
+document.querySelector("#submit").addEventListener("click", submit)
+
+function submit() {
+    // Source - https://stackoverflow.com/a/10284006
+    // Posted by ninjagecko, modified by community. See post 'Timeline' for change history
+    // Retrieved 2026-02-20, License - CC BY-SA 4.0
+
+    const zip = rows => rows[0].map((_, c) => rows.map(row => row[c]))
+
+
+    let data = document.querySelector("#recipe-metadata").formData()
+    data.directions = document.querySelector("#direction-editor").value
+
+    let raw_ingredient_data = document.querySelector("#ingredients").formData()
+    console.log(raw_ingredient_data)
+
+
 }
