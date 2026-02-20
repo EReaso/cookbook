@@ -8,32 +8,38 @@
 $font-family-base: "Noto Serif", sans-serif;
 
 :is(h1, h2, h3, h4, h5, h6) + hr {
-	@extend .mt-0;
+  @extend .mt-0;
 }
 
 :is(h1, h2, h3, h4, h5, h6) hr {
-	@extend .mt-0, .border-2, .mx-auto;
-	width: calc(100% - 0.5em);
+  @extend .mt-0, .border-2, .mx-auto;
+  width: calc(100% - 0.5em);
 }
 
 h1, h2, h3, h4, h5, h6 {
-	width: fit-content;
-	align-self: center;
+  width: fit-content;
+  align-self: center;
 }
 
 .ingredient-weight::before {
-	content: "⸱";
-	display: inline-block;
-	font-weight: bold;
-	@extend .text-secondary, .me-1;
+  content: "⸱";
+  display: inline-block;
+  font-weight: bold;
+  @extend .text-secondary, .me-1;
 }
 
 ol li::marker {
-	font-size: 1.5em;
-	font-weight: 350;
-	font-optical-sizing: auto;
-	@extend .text-secondary;
-	font-variation-settings: "wdth" 62.5;
+  font-size: 1.5em;
+  font-weight: 350;
+  font-optical-sizing: auto;
+  @extend .text-secondary;
+  font-variation-settings: "wdth" 62.5;
+}
+
+:is(input, select, button, textarea) {
+  :disabled, [aria-disabled=true] {
+    cursor: not-allowed !important
+  }
 }
 
 @import "bootstrap/scss/bootstrap";
