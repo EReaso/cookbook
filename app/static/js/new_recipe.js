@@ -18,41 +18,52 @@ for (let i of inputs) {
 }
 
 // Disable slug input and auto-update on title change
-document.querySelector("#slug").setAttribute("disabled", "true")
+document.querySelector("#slug").disabled = true
 document.querySelector("#title").addEventListener("input", (e) => {
     document.querySelector("#slug").value = e.target.value.toLowerCase().replace(/[^_a-z0-9]/g, "_")
 })
 
-function create_ingredient() {
+function create_ingredient(doFocus = true) {
     const template = document.querySelector("#ingredient_template")
     let clone = template.cloneNode(true)
 
     clone.classList.remove("d-none")
     clone.setAttribute("id", "")
     clone.setAttribute("data-ingredient", Math.random().toString(36).substring(2, 15)) // Generate a random string as a temporary UUID for the ingredient
-    document.querySelector("#ingredient-select").appendChild(clone)
 
     document.querySelector("#ingredients").insertBefore(clone, template)
 
     clone.addEventListener("input", generate_ingredient_options)
 
-    clone.querySelector("input").focus()
+
+    if (doFocus) clone.querySelector("input").focus()
 
 
     // Add hook for delete button
     clone.querySelector(".delete-parent").addEventListener("click", (e) => delete_ingredient(e.target.closest(".ingredient_row")))
+
+    // Ensure the UI/select updates after adding a new row
+    generate_ingredient_options()
 }
 
-create_ingredient()
+create_ingredient(false)
 
 function delete_ingredient(row) {
     const uuid = row.getAttribute("data-ingredient")
     row.remove()
-    document.querySelector(`[data-ingredient="${uuid}"]`).remove()
+
+    // remove any matching option in the select (if present)
+    const option = document.querySelector(`#ingredient-select option[data-ingredient="${uuid}"]`)
+    if (option) option.remove()
+
     if (document.querySelectorAll("#ingredients li:not(#ingredient_template)").length === 0) {
         document.querySelector("#ingredient-select").innerHTML = "<option>Add an Ingredient to Insert</option>"
+        document.querySelector("#ingredient-select").disabled = true
         document.querySelectorAll("#insert-ingredient-container button").forEach(btn => btn.disabled = true)
     }
+
+    // keep options consistent after deletion
+    generate_ingredient_options()
 }
 
 // Add more ingredient rows when the bottom row is selected
