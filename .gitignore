@@ -771,7 +771,7 @@ secring.*
 *.iml
 /.idea/
 
-.idea/
+.idea/*
 
 # VSCode: ignore extension recommendations (remove whitelist if you want this ignored)
 .vscode/extensions.json
