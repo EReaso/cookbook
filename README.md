@@ -2,6 +2,8 @@
 
 A Flask-based web application for managing recipes with ingredients, images, and unit conversions.
 
+## Please excuse the AI README; I'm focusing on more important parts (see #19) and only use AI for DevOps (Docker, etc.)
+
 ## Features
 
 - Recipe management with ingredients and directions
