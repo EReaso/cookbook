@@ -40,7 +40,7 @@ function create_ingredient(doFocus = true) {
 
 
     // Add hook for delete button
-    clone.querySelector(".delete-parent").addEventListener("click", (e) => delete_ingredient(e.target.closest(".ingredient_row")))
+    clone.querySelector(".delete-parent").addEventListener("click", (e) => delete_ingredient(e.target.closest("li")))
 
     // Ensure the UI/select updates after adding a new row
     generate_ingredient_options()
@@ -119,7 +119,7 @@ function submit() {
     let data = document.querySelector("#recipe-metadata").formData()
     data.directions = document.querySelector("#direction-editor").value
 
-    let raw_ingredient_data = document.querySelector("#ingredients").formData()
+    let raw_ingredient_data = document.querySelector("#ingredient-form").formData()
     console.log(raw_ingredient_data)
 
 
