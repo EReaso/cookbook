@@ -86,7 +86,7 @@ document.querySelectorAll("#insert-ingredient-container button[data-js-template]
 
 function generate_ingredient_options() {
     const ingredients = Array.from(document.querySelectorAll("#ingredients li"))
-        .filter(i => !i.classList.contains("d-none") && i.querySelector('span input[name="ingredient_slug"]') && i.querySelector('span input[name="ingredient_slug"]').value.trim() !== "")
+        .filter(i => !i.classList.contains("d-none") && i.querySelector('span input[name=ingredient-name]') && i.querySelector('span input[name=ingredient-name]').value.trim() !== "")
     const options = document.querySelector("#ingredient-select")
     options.innerHTML = ""
 
@@ -100,8 +100,8 @@ function generate_ingredient_options() {
     }
 
     for (let i of ingredients) {
-        const ingredient_slug = i.querySelector('span input[name="ingredient-slug"]').value
-        const option = options.appendChild(new Option(ingredient_slug, ingredient_slug))
+        const ingredient_name = i.querySelector('span input[name="ingredient-name"]').value
+        const option = options.appendChild(new Option(ingredient_name, ingredient_name))
         option.setAttribute("data-ingredient", i.getAttribute("data-ingredient"))
     }
 }
@@ -116,11 +116,19 @@ function submit() {
     const zip = rows => rows[0].map((_, c) => rows.map(row => row[c]))
 
 
-    let data = document.querySelector("#recipe-metadata").formData()
-    data.directions = document.querySelector("#direction-editor").value
+    let data = new FormData(document.querySelector("#recipe-metadata"))
+    data.set("directions", document.querySelector("#direction-editor").value)
 
-    let raw_ingredient_data = document.querySelector("#ingredient-form").formData()
+    console.log(data)
+
+    let raw_ingredient_data = new FormData(document.querySelector("#ingredient-form"))
+        .getAll()
     console.log(raw_ingredient_data)
 
+    let ingredients = []
+
+    while (!raw_ingredient_data.done) {
+        let ingredient = {}
+    }
 
 }

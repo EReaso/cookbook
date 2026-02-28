@@ -39,10 +39,12 @@
                 <li class="d-none ingredient-row gap-lg-3 gap-1 gap-md-2 list-group-item d-flex align-content-center flex-nowrap"
                     id="ingredient-template">
 				<span class="col-md-2 col-1 flex-shrink-1">
-				<input class="form-control" title="Amount" type="number"><small class="form-text">Amount</small></span>
-                    <span class="col-2 flex-shrink-1"><input class="form-control col" title="Unit" type="text">
+				<input class="form-control" title="Amount" type="number" name="amount"><small
+                        class="form-text">Amount</small></span>
+                    <span class="col-2 flex-shrink-1"><input class="form-control col" title="Unit" type="text"
+                                                             name="unit">
 					<small class="form-text">Unit</small></span>
-                    <span class="flex-grow-1"><input class="form-control" name="ingredient-slug" title="Ingredient"
+                    <span class="flex-grow-1"><input class="form-control" name="ingredient-name" title="Ingredient"
                                                      type="text">
 					<small class="form-text">Ingredient Slug</small></span>
                     <button aria-label="Delete this ingredient" class="btn btn-danger delete-parent" type="button"><i
@@ -69,12 +71,14 @@
 						<span class="d-flex flex-row gap-2 align-items-center" id="insert-ingredient-container">
 							<span class="flex-shrink-0">Insert Ingredient Reference:</span>
 							<select aria-label="Select an ingredient to insert."
-                                    class="form-select me-1 flex-shrink-1 flex-grow-0" id="ingredient-select" disabled><option>Create an ingredient to insert it</option></select>
-							<button aria-label="Insert the remaining quantity of an ingredient."
+                                    class="form-select me-1 flex-shrink-1 flex-grow-0" id="ingredient-select"><option>Create an ingredient to insert it</option></select>
+
+                            <button aria-label="Insert the remaining quantity of an ingredient."
                                     class="btn btn-danger fst-italic flex-lg-shrink-0"
                                     data-js-template="remaining ingredient"
                                     disabled type="button">Remaining (Ingredient)</button>
-							<button class="btn btn-warning fst-italic flex-lg-shrink-0"
+
+                            <button class="btn btn-warning fst-italic flex-lg-shrink-0"
                                     data-js-template="1 Unit ingredient"
                                     disabled type="button">(Amount) (Ingredient)</button>
 						</span>
