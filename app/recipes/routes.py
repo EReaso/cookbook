@@ -1,4 +1,5 @@
-from flask import abort, redirect, render_template, request
+from flask import abort, redirect, render_template, request, url_for
+from pydantic import ValidationError
 
 from . import bp
 from .models import Recipe
@@ -22,7 +23,7 @@ def new_recipe():
 @bp.post("/new/")
 def post_recipe():
     try:
-        data = CreateRecipe().model_validate_json(request.get_json())
+        data = CreateRecipe.model_validate_json(request.get_json())
     except ValidationError:
         return abort(400, "Invalid input")
 
