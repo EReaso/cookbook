@@ -76,7 +76,7 @@ def runner(app):
 
 
 @pytest.fixture
-def sample_recipe(db):
+def sample_recipe(db, slug: str = "test-recipe", name: str = "Test Recipe"):
     """Create a sample recipe for testing."""
     from app.recipes.models import Recipe, RecipeIngredient
 
@@ -96,11 +96,11 @@ def sample_recipe(db):
 
 
 @pytest.fixture
-def sample_ingredient(db):
+def sample_ingredient(db, slug: str = "test-ingredient", name: str = "Test Ingredient"):
     """Create a sample ingredient for testing."""
     from app.recipes.models import Ingredient
 
-    ingredient = Ingredient(slug="test-ingredient", name="Test Ingredient", density=1.0)
+    ingredient = Ingredient(slug="test-ingredient", name=name, density=1.0)
     db.session.add(ingredient)
     db.session.commit()
     return ingredient
