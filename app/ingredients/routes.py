@@ -10,7 +10,9 @@ from . import bp
 
 @bp.get("/datalist-options/")
 def datalist_options():
-    query = request.args.get("q", "")
+    query = request.args.get("q", "").strip()
+    if not query:
+        return []
     results = (
         db.session.execute(
             db.select(Ingredient).where(
@@ -22,4 +24,4 @@ def datalist_options():
         .scalars()
         .all()
     )
-    return [IngredientSchema.model_validate(i.__dict__).model_dump() for i in results]
+    return [IngredientSchema.model_validate(i, from_attributes=True).model_dump() for i in results]

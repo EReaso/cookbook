@@ -14,7 +14,7 @@ class IngredientSchema(BaseModel):
 class RecipeIngredientSchema(BaseModel):
     amount: PositiveFloat | None = None
     unit: str | None = Field(max_length=20, default=None)
-    ingredient_list: str | None = Field(max_length=100, default="Ingredients")
+    ingredient_list: str = Field(max_length=100, default="Ingredients")
     slug: str = Field(max_length=50)
     name: str = Field(max_length=50)
 
@@ -29,7 +29,7 @@ class RecipeIngredientSchema(BaseModel):
 class CreateRecipe(BaseModel):
     slug: str | None = Field(default=None, max_length=100)
 
-    name: str = Field(max_length=100)
+    name: str = Field(min_length=1, max_length=100)
 
     cook_time: float | None = None
     prep_time: float | None = None
@@ -53,7 +53,10 @@ class CreateRecipe(BaseModel):
 
     def to_db(self, session: Session) -> Recipe:
         recipe = Recipe(**self.model_dump(mode="python", exclude={"recipe_ingredients"}, exclude_unset=True))
-        recipe.slug = re.sub(r'_+', '_', re.sub(r'[^_a-z0-9]+', '_', (recipe.slug or recipe.name).lower())).strip('_')
+        slug = re.sub(r'_+', '_', re.sub(r'[^_a-z0-9]+', '_', (recipe.slug or recipe.name).lower())).strip('_')
+        if not slug:
+            raise ValueError("Recipe name must produce a non-empty slug")
+        recipe.slug = slug
 
         for i in self.recipe_ingredients:
             if (ingredient := session.get(Ingredient, i.slug)) is None:
@@ -69,7 +72,6 @@ class CreateRecipe(BaseModel):
         session.add(recipe)
         # Flush to assign relationship FKs and surface DB errors before commit.
         session.flush()
-        session.commit()
         return recipe
 
 

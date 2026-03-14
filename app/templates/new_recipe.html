@@ -4,7 +4,7 @@
 
 {% block head %}
     <link href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
     <script src="{{ url_for('static', filename='js/server_datalist.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/new_recipe.js') }}" defer></script>
 {% endblock %}
@@ -19,7 +19,7 @@
             <div class="form-group d-flex flex-column gap-3" id="metadata">
                 <ul class="list-group list-group-flush input-container">
                     <li class="input-row list-group-item d-flex justify-content-between align-content-center">
-                        <label class="form-label flex-grow-1 me-md-5 me-sm-4 me-3 text-nowrap" for="name">Title</label>
+                        <label class="form-label flex-grow-1 me-md-5 me-sm-4 me-3 text-nowrap" for="title">Title</label>
                         <input class="form-control"
                                id="title" name="title"/>
                     </li>
