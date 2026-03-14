@@ -109,7 +109,9 @@ def sample_recipe_ingredient(db, sample_recipe, sample_ingredient):
     from app.recipes.models import RecipeIngredient
 
     # Create via relationships to ensure SQLAlchemy handles FK values
-    ri = RecipeIngredient(ingredient_list="main", amount=2.0, unit="cups", recipe=sample_recipe, ingredient=sample_ingredient)
+    ri = RecipeIngredient(
+        ingredient_list="main", amount=2.0, unit="cups", recipe=sample_recipe, ingredient=sample_ingredient
+    )
     db.session.add(ri)
     db.session.commit()
     return ri
