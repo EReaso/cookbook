@@ -16,3 +16,5 @@ psycopg2-binary>=2.9.9
 
 # WSGI server for production
 gunicorn>=21.2.0
+
+sqlalchemy>=2.0.0

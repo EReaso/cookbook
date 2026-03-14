@@ -14,6 +14,6 @@ def book_sample():
 @bp.route("/book/<recipe_slug>/")
 def book(recipe_slug):
     recipe = Recipe.query.get_or_404(recipe_slug)
-    ingredients = sorted(recipe.recipe_ingredients, key=lambda i: i.list)
-    ingredient_lists = ((k, list(v)) for k, v in groupby(ingredients, lambda i: i.list))
+    ingredients = sorted(recipe.recipe_ingredients, key=lambda i: i.ingredient_list)
+    ingredient_lists = ((k, list(v)) for k, v in groupby(ingredients, lambda i: i.ingredient_list))
     return render_template("bookview.html", **locals())

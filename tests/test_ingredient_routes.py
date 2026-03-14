@@ -40,7 +40,7 @@ class TestIngredientRoutes:
         """Test datalist options endpoint with no query parameter."""
         response = client.get("/ingredients/datalist-options/")
         assert response.status_code == 200
-        # Should return empty list when no query or no matching results
+        # Should return empty ingredient_list when no query or no matching results
         data = response.get_json()
         assert isinstance(data, list)
 

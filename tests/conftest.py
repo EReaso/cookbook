@@ -1,6 +1,5 @@
 """Test configuration and fixtures."""
 
-import os
 import sys
 import tempfile
 from importlib import import_module
@@ -17,17 +16,16 @@ flask_app = _create() if callable(_create) else getattr(_app, "app")
 _db = import_module("app.extensions").db
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def app():
     """Create and configure a test Flask application instance."""
-    # Create a temporary directory for test database and storage
-    db_fd, db_path = tempfile.mkstemp()
+    # Create a temporary directory for storage
     storage_dir = tempfile.mkdtemp()
 
     flask_app.config.update(
         {
             "TESTING": True,
-            "SQLALCHEMY_DATABASE_URI": f"sqlite:///{db_path}",
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
             "SQLALCHEMY_TRACK_MODIFICATIONS": False,
             "WTF_CSRF_ENABLED": False,
         }
@@ -44,9 +42,6 @@ def app():
 
     yield flask_app
 
-    # Cleanup
-    os.close(db_fd)
-    os.unlink(db_path)
     # Clean up storage directory
     import shutil
 
@@ -73,6 +68,12 @@ def client(app):
 def runner(app):
     """Create a test CLI runner for the Flask application."""
     return app.test_cli_runner()
+
+
+@pytest.fixture
+def e2e_live_server(live_server):
+    """Use pytest-flask's managed live server fixture for e2e tests."""
+    yield live_server
 
 
 @pytest.fixture

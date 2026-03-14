@@ -20,7 +20,6 @@ class Recipe(db.Model):
 
     servings = db.Column(db.Integer(), nullable=True)
 
-    # TODO: Add Users
     directions = db.Column(db.Text)
 
     images = db.Column(db.Text, nullable=True)
@@ -54,7 +53,7 @@ class Ingredient(db.Model):
 
 
 class RecipeIngredient(db.Model):
-    list = db.Column(db.String(100), primary_key=True)
+    ingredient_list = db.Column(db.String(100), primary_key=True)
 
     amount = db.Column(db.Float)
     unit = db.Column(db.String(20))
