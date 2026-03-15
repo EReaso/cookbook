@@ -70,6 +70,15 @@ def runner(app):
     return app.test_cli_runner()
 
 
+def _create_sample_ingredient(db, slug: str = "test-ingredient", name: str = "Test Ingredient"):
+    from app.recipes.models import Ingredient
+
+    ingredient = Ingredient(slug=slug, name=name, density=1.0)
+    db.session.add(ingredient)
+    db.session.commit()
+    return ingredient
+
+
 @pytest.fixture
 def e2e_live_server(live_server):
     """Use pytest-flask's managed live server fixture for e2e tests."""
@@ -79,15 +88,10 @@ def e2e_live_server(live_server):
 @pytest.fixture
 def sample_recipe(db, slug: str = "test-recipe", name: str = "Test Recipe"):
     """Create a sample recipe for testing."""
-    from app.recipes.models import Recipe, RecipeIngredient
+    from app.recipes.models import Recipe
 
     recipe = Recipe(slug=slug, name=name, directions="1. Do this\n2. Do that")
     db.session.add(recipe)
-    db.session.flush()
-
-    ingredient = sample_ingredient(db)
-    ri = RecipeIngredient(ingredient_list="main", amount=1.0, unit="cup", recipe=recipe, ingredient=ingredient)
-    db.session.add(ri)
     db.session.commit()
     return recipe
 
@@ -95,12 +99,7 @@ def sample_recipe(db, slug: str = "test-recipe", name: str = "Test Recipe"):
 @pytest.fixture
 def sample_ingredient(db, slug: str = "test-ingredient", name: str = "Test Ingredient"):
     """Create a sample ingredient for testing."""
-    from app.recipes.models import Ingredient
-
-    ingredient = Ingredient(slug=slug, name=name, density=1.0)
-    db.session.add(ingredient)
-    db.session.commit()
-    return ingredient
+    return _create_sample_ingredient(db, slug=slug, name=name)
 
 
 @pytest.fixture

@@ -1,5 +1,3 @@
-import pytest
-
 from app.recipes.schemas import CreateRecipe
 
 
@@ -13,7 +11,6 @@ def _stub_recipe_submit(page):
     page.route("**/recipes/new*", handler)
 
 
-@pytest.mark.e2e
 def test_new_recipe_submit_posts_expected_json_shape(page, e2e_live_server):
     _stub_recipe_submit(page)
     page.goto(e2e_live_server.url("/recipes/new/"))
@@ -68,7 +65,6 @@ def test_new_recipe_submit_posts_expected_json_shape(page, e2e_live_server):
     assert CreateRecipe.model_validate(payload)
 
 
-@pytest.mark.e2e
 def test_new_recipe_submit_filters_blank_ingredient_rows(page, e2e_live_server):
     _stub_recipe_submit(page)
     page.goto(e2e_live_server.url("/recipes/new/"))
@@ -100,8 +96,11 @@ def test_new_recipe_submit_filters_blank_ingredient_rows(page, e2e_live_server):
         }
     ]
 
+    parsed = CreateRecipe.model_validate(payload)
+    assert parsed.recipe_ingredients[0].amount is None
+    assert parsed.recipe_ingredients[0].unit is None
 
-@pytest.mark.e2e
+
 def test_new_recipe_slug_generation_from_name(page, e2e_live_server):
     _stub_recipe_submit(page)
     page.goto(e2e_live_server.url("/recipes/new/"))
