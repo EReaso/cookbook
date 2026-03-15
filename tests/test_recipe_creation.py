@@ -31,7 +31,7 @@ class TestRecipeCreation:
 
         response = client.post("/recipes/new/", json=payload)
         assert response.status_code == 201
-        assert len(db.session.query(Recipe).get(payload["slug"]).recipe_ingredients) == 3
+        assert len(db.session.get(Recipe, payload["slug"]).recipe_ingredients) == 3
 
     def test_create_recipe_invalid_payload(self, client):
         payload = {

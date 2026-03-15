@@ -1,5 +1,6 @@
 function register_datalist_event_listeners() {
-    document.querySelectorAll(".server-datalist").forEach(element => {
+    document.querySelectorAll(".server-datalist:not([data-listener-registered])").forEach(element => {
+        element.setAttribute("data-listener-registered", "true")
         element.addEventListener("input", async () => {
             const list = document.getElementById(element.getAttribute("list"))
 
@@ -7,12 +8,13 @@ function register_datalist_event_listeners() {
 
             if (!url) return
 
-            let resp = await fetch(url, {data: {query: this.value}})
+            const queryUrl = `${url}?q=${encodeURIComponent(element.value)}`
+            let resp = await fetch(queryUrl)
 
             if (resp.ok) {
                 const data = await resp.json()
                 list.innerHTML = ""
-                let nodes = data.map((item) => list.appendChild(new Option(item.name, item.value)))
+                data.forEach((item) => list.appendChild(new Option(item.name, item.slug)))
             }
         })
     })

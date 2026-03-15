@@ -36,10 +36,9 @@ ol li::marker {
   font-variation-settings: "wdth" 62.5;
 }
 
-:is(input, select, button, textarea) {
-  :disabled, [aria-disabled=true] {
-    cursor: not-allowed !important
-  }
+:is(input, select, button, textarea):disabled,
+:is(input, select, button, textarea)[aria-disabled=true] {
+  cursor: not-allowed !important
 }
 
 @import "bootstrap/scss/bootstrap";

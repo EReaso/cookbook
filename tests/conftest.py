@@ -81,16 +81,12 @@ def sample_recipe(db, slug: str = "test-recipe", name: str = "Test Recipe"):
     """Create a sample recipe for testing."""
     from app.recipes.models import Recipe, RecipeIngredient
 
-    # Depend on the `sample_ingredient` fixture for a related ingredient
-    # (pytest will resolve this dependency automatically)
-    # Create the recipe and a linking RecipeIngredient using relationships
-    # so SQLAlchemy sets foreign keys correctly.
-    recipe = Recipe(slug="test-recipe", name="Test Recipe", directions="1. Do this\n2. Do that")
+    recipe = Recipe(slug=slug, name=name, directions="1. Do this\n2. Do that")
     db.session.add(recipe)
     db.session.flush()
 
-    # create a minimal RecipeIngredient in tests via relationship assignment
-    ri = RecipeIngredient(list="main", amount=1.0, unit="cup", recipe=recipe, ingredient=sample_ingredient(db))
+    ingredient = sample_ingredient(db)
+    ri = RecipeIngredient(ingredient_list="main", amount=1.0, unit="cup", recipe=recipe, ingredient=ingredient)
     db.session.add(ri)
     db.session.commit()
     return recipe
@@ -101,7 +97,7 @@ def sample_ingredient(db, slug: str = "test-ingredient", name: str = "Test Ingre
     """Create a sample ingredient for testing."""
     from app.recipes.models import Ingredient
 
-    ingredient = Ingredient(slug="test-ingredient", name=name, density=1.0)
+    ingredient = Ingredient(slug=slug, name=name, density=1.0)
     db.session.add(ingredient)
     db.session.commit()
     return ingredient
@@ -113,7 +109,9 @@ def sample_recipe_ingredient(db, sample_recipe, sample_ingredient):
     from app.recipes.models import RecipeIngredient
 
     # Create via relationships to ensure SQLAlchemy handles FK values
-    ri = RecipeIngredient(list="main", amount=2.0, unit="cups", recipe=sample_recipe, ingredient=sample_ingredient)
+    ri = RecipeIngredient(
+        ingredient_list="main", amount=2.0, unit="cups", recipe=sample_recipe, ingredient=sample_ingredient
+    )
     db.session.add(ri)
     db.session.commit()
     return ri

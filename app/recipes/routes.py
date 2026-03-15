@@ -31,13 +31,14 @@ def new_recipe():
         data = CreateRecipe.model_validate(json_data)
         recipe = data.to_db(db.session)
         db.session.commit()
-    except ValidationError:
+    except (ValidationError, ValueError):
+        db.session.rollback()
         return abort(400)
     except IntegrityError:
         db.session.rollback()
         return abort(400)
 
-    return url_for("recipes.get_recipe", slug=recipe.slug), 201
+    return {"slug": recipe.slug}, 201
 
 
 @bp.get("/get/<slug>/")
