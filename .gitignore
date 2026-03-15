@@ -14,12 +14,7 @@ pip-selfcheck.json
 *.resources
 test-results/
 *.bak
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
+.vscode/
 .history/
 *.vsix
 *.patch
@@ -92,30 +87,12 @@ Backup of *.doc*
 *.xlk
 ~$*.ppt*
 *.~vsd*
-.idea/**/workspace.xml
-.idea/**/tasks.xml
-.idea/**/usage.statistics.xml
-.idea/**/dictionaries
-.idea/**/shelf
-.idea/**/aws.xml
-.idea/**/contentModel.xml
-.idea/**/dataSources/
-.idea/**/dataSources.ids
-.idea/**/dataSources.local.xml
-.idea/**/sqlDataSources.xml
-.idea/**/dynamic.xml
-.idea/**/uiDesigner.xml
-.idea/**/dbnavigator.xml
-.idea/**/gradle.xml
-.idea/**/libraries
+.idea/
 cmake-build-*/
-.idea/**/mongoSettings.xml
 *.iws
 out/
 .idea_modules/
 atlassian-ide-plugin.xml
-.idea/replstate.xml
-.idea/sonarlint/
 com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
@@ -767,30 +744,10 @@ abstract.log*
 abstract.record*
 secring.*
 
-# JetBrains / IntelliJ / PyCharm
+# IDE files
+.idea/
+.vscode/
 *.iml
-/.idea/
-
-.idea/*
-
-# VSCode: ignore extension recommendations (remove whitelist if you want this ignored)
-.vscode/extensions.json
-
-# GitHub Copilot related (repo-local configs / data)
-.copilot/
-.copilotrc
-.github/copilot.yml
-.github/copilot/
-
-# Generic Copilot / suggestion artifacts
-copilot.*# GitHub Copilot diff/state artifacts
-CopilotDiffState
-*.CopilotDiffState
-.idea/CopilotDiffState
-.idea/**/CopilotDiffState*
-.vscode/CopilotDiffState*
-.copilot/CopilotDiffState
-.github/copilot/CopilotDiffState
 
 # Generated CSS files (built from SCSS)
 app/static/css/*.css
