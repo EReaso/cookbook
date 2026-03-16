@@ -8,6 +8,14 @@ def _random_slug() -> str:
 
 
 class TestRecipeCreation:
+    def test_new_recipe_form_page(self, client):
+        response = client.get("/recipes/new/")
+        assert response.status_code == 200
+
+    def test_create_recipe_missing_json_payload(self, client):
+        response = client.post("/recipes/new/", data="not-json", content_type="text/plain")
+        assert response.status_code == 400
+
     def test_create_recipe(self, client, db):
         payload = {
             "name": "Test Recipe",
