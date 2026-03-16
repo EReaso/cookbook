@@ -54,9 +54,9 @@ class TestIngredientRoutes:
         assert len(data) == 2  # Should find both sugar and brown-sugar
 
         # Verify structure of returned data
-        slugs = [item['slug'] for item in data]
-        assert 'sugar' in slugs
-        assert 'brown-sugar' in slugs
+        slugs = [item["slug"] for item in data]
+        assert "sugar" in slugs
+        assert "brown-sugar" in slugs
 
     def test_datalist_options_search_by_slug(self, client, db):
         """Test datalist options searching by slug."""
@@ -72,7 +72,7 @@ class TestIngredientRoutes:
         assert response.status_code == 200
         data = response.get_json()
         assert len(data) == 1
-        assert data[0]['slug'] == 'vanilla'
+        assert data[0]["slug"] == "vanilla"
 
     def test_datalist_options_no_match(self, client, db):
         """Test datalist options with no matching ingredients."""
@@ -87,7 +87,7 @@ class TestIngredientRoutes:
         assert response.status_code == 200
         data = response.get_json()
         assert len(data) == 1
-        assert data[0]['slug'] == 'choc-chips'
+        assert data[0]["slug"] == "choc-chips"
 
     def test_datalist_options_returns_correct_fields(self, client, db):
         """Test that datalist options returns the correct fields."""
@@ -98,10 +98,10 @@ class TestIngredientRoutes:
 
         # Verify the structure matches the schema
         item = data[0]
-        assert 'slug' in item
-        assert 'name' in item
-        assert item['slug'] == 'butter'
-        assert item['name'] == 'Unsalted Butter'
+        assert "slug" in item
+        assert "name" in item
+        assert item["slug"] == "butter"
+        assert item["name"] == "Unsalted Butter"
 
     def test_datalist_options_multiple_results(self, client, db):
         """Test that multiple results are returned for broad search."""
@@ -116,4 +116,4 @@ class TestIngredientRoutes:
         assert response.status_code == 200
         data = response.get_json()
         assert len(data) == 1
-        assert data[0]['slug'] == 'choc-chips'
+        assert data[0]["slug"] == "choc-chips"

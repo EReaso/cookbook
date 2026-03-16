@@ -21,7 +21,7 @@ def test_new_recipe_submit_posts_expected_json_shape(page, e2e_live_server):
     page.fill("#cook_temp", "375")
     page.fill("#servings", "4")
 
-    row = page.locator('#ingredients li.ingredient-row:not(.d-none)').first
+    row = page.locator("#ingredients li.ingredient-row:not(.d-none)").first
     row.locator('input[name="amount"]').fill("1.5")
     row.locator('input[name="unit"]').fill("cup")
     row.locator('input[name="name"]').fill("All Purpose Flour")
@@ -72,7 +72,7 @@ def test_new_recipe_submit_filters_blank_ingredient_rows(page, e2e_live_server):
     page.fill("#title", "Tomato Soup")
 
     page.click("#create-ingredient-button")
-    visible_rows = page.locator('#ingredients li.ingredient-row:not(.d-none)')
+    visible_rows = page.locator("#ingredients li.ingredient-row:not(.d-none)")
 
     visible_rows.nth(0).locator('input[name="name"]').fill("Tomato")
     visible_rows.nth(1).locator('input[name="name"]').fill("")
