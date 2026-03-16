@@ -2,6 +2,8 @@
 
 import io
 
+import app.extensions as extensions
+
 
 class TestImageRoutes:
     """Test suite for image routes."""
@@ -42,3 +44,14 @@ class TestImageRoutes:
         """Test retrieving an image that doesn't exist."""
         response = client.get("/images/nonexistent-image-id")
         assert response.status_code == 404
+
+    def test_get_image_without_storage_returns_500(self, client, monkeypatch):
+        monkeypatch.setattr(extensions, "storage", None)
+        response = client.get("/images/anything")
+        assert response.status_code == 500
+
+    def test_post_image_without_storage_returns_500(self, client, monkeypatch):
+        monkeypatch.setattr(extensions, "storage", None)
+        data = {"file": (io.BytesIO(b"fake image data"), "test.jpg")}
+        response = client.post("/images/", data=data, content_type="multipart/form-data")
+        assert response.status_code == 500

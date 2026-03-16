@@ -44,6 +44,12 @@ class TestRecipe:
         urls = list(recipe.image_urls)
         assert urls == [None]
 
+    def test_parsed_directions_placeholder(self, db):
+        recipe = Recipe(slug="directions-recipe", name="Directions", directions="Step 1")
+        db.session.add(recipe)
+        db.session.commit()
+        assert recipe.parsed_directions == "not implemented yet"
+
 
 class TestIngredient:
     """Test suite for Ingredient model."""
@@ -212,3 +218,25 @@ class TestRecipeIngredient:
         db.session.commit()
 
         assert recipe_ingredient.weight is None
+
+    def test_pretty_uses_cached_value(self, db, sample_recipe, sample_ingredient):
+        recipe_ingredient = RecipeIngredient(
+            ingredient_list="main",
+            amount=1.0,
+            unit="cup",
+            recipe_slug=sample_recipe.slug,
+            ingredient_slug=sample_ingredient.slug,
+        )
+        recipe_ingredient._pretty = "cached value"
+        assert recipe_ingredient.pretty == "cached value"
+
+    def test_weight_uses_cached_value(self, db, sample_recipe, sample_ingredient):
+        recipe_ingredient = RecipeIngredient(
+            ingredient_list="main",
+            amount=1.0,
+            unit="cup",
+            recipe_slug=sample_recipe.slug,
+            ingredient_slug=sample_ingredient.slug,
+        )
+        recipe_ingredient._weight = 42
+        assert recipe_ingredient.weight == 42

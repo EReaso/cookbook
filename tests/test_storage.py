@@ -119,3 +119,28 @@ class TestStorage:
 
         with pytest.raises(RuntimeError, match="storage not initialized"):
             storage.read("test-id")
+
+    def test_storage_init_app_requires_app_or_dir(self):
+        storage = Storage()
+        with pytest.raises(ValueError, match="must provide app or dir"):
+            storage.init_app()
+
+    def test_storage_init_app_registers_extensions_when_missing(self, tmp_path):
+        class DummyApp:
+            instance_path = str(tmp_path)
+
+        storage = Storage()
+        app = DummyApp()
+        storage.init_app(app=app)
+
+        assert hasattr(app, "extensions")
+        assert app.extensions["storage"] is storage
+
+    def test_storage_delete_noop_when_uninitialized(self):
+        storage = Storage()
+        storage.delete("missing-file")
+
+    def test_storage_iadd_returns_created_id(self, tmp_path):
+        storage = Storage(dir=tmp_path)
+        file_id = storage.__iadd__(b"via-iadd")
+        assert (tmp_path / file_id).read_bytes() == b"via-iadd"

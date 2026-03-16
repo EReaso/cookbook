@@ -6,12 +6,7 @@ from app.book import bp
 from app.recipes.models import Recipe
 
 
-@bp.route("/book/")
-def book_sample():
-    return render_template("bookview.html")
-
-
-@bp.route("/book/<recipe_slug>/")
+@bp.route("/<recipe_slug>/")
 def book(recipe_slug):
     recipe = Recipe.query.get_or_404(recipe_slug)
     ingredients = sorted(recipe.recipe_ingredients, key=lambda i: i.ingredient_list)
