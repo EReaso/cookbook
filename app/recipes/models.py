@@ -58,11 +58,11 @@ class RecipeIngredient(db.Model):
     amount = db.Column(db.Float)
     unit = db.Column(db.String(20))
 
-    recipe_slug = db.Column(db.String(100), db.ForeignKey('recipe.slug'), primary_key=True)
-    ingredient_slug = db.Column(db.String(50), db.ForeignKey('ingredient.slug'), primary_key=True)
+    recipe_slug = db.Column(db.String(100), db.ForeignKey("recipe.slug"), primary_key=True)
+    ingredient_slug = db.Column(db.String(50), db.ForeignKey("ingredient.slug"), primary_key=True)
 
-    recipe = db.relationship('Recipe', back_populates='recipe_ingredients')
-    ingredient = db.relationship('Ingredient', back_populates='recipes')
+    recipe = db.relationship("Recipe", back_populates="recipe_ingredients")
+    ingredient = db.relationship("Ingredient", back_populates="recipes")
 
     _pretty = None
 

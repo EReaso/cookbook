@@ -22,13 +22,12 @@ test-cov:  ## Run tests with coverage
 	pytest --cov=app --cov-report=html --cov-report=term-missing
 
 lint:  ## Run linting checks
-	flake8 app tests
-	black --check app tests
-	isort --check-only app tests
+	ruff check .
+	ruff format --check .
 
-format:  ## Format code with black and isort
-	black app tests
-	isort app tests
+format:  ## Format code with Ruff
+	ruff check --fix .
+	ruff format .
 
 clean:  ## Clean up generated files
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
