@@ -33,7 +33,7 @@ jobs:
 
       - name: Lint
         run: |
-          python -m flake8 .
+          python -m ruff format --check .
 
       - name: Test
         run: |
