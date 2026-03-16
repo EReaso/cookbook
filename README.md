@@ -231,39 +231,30 @@ pytest tests/test_models.py
 
 ### Code Style
 
-This project follows **Black's opinionated code style**:
+This project uses **Ruff** for both linting and formatting:
 
 - 4-space indentation
 - Line length: 120 characters
-- Double quotes for strings (with `skip-string-normalization` disabled by default)
-
-**Linting and Formatting:**
-
-- **Black**: Automatic code formatting
-- **isort**: Import sorting (configured to work with Black)
-- **flake8**: Style and quality linting
-
-**Automated Formatting:**
-The CI/CD pipeline automatically formats code with Black and isort on pull requests. If formatting changes are needed, they will be automatically committed to your PR branch by the GitHub Actions bot.
+- Import sorting via Ruff's isort-compatible rules
 
 ### Code Quality Tools
 
-Format code with black:
+Format code with Ruff:
 
 ```bash
-black app tests
+ruff format .
 ```
 
-Sort imports with isort:
+Auto-fix lint issues:
 
 ```bash
-isort app tests
+ruff check --fix .
 ```
 
-Lint code with flake8:
+Lint code with Ruff:
 
 ```bash
-flake8 app tests
+ruff check .
 ```
 
 ### Pre-commit Hooks

@@ -53,7 +53,7 @@ class CreateRecipe(BaseModel):
 
     def to_db(self, session: Session) -> Recipe:
         recipe = Recipe(**self.model_dump(mode="python", exclude={"recipe_ingredients"}, exclude_unset=True))
-        slug = re.sub(r'_+', '_', re.sub(r'[^_a-z0-9]+', '_', (recipe.slug or recipe.name).lower())).strip('_')
+        slug = re.sub(r"_+", "_", re.sub(r"[^_a-z0-9]+", "_", (recipe.slug or recipe.name).lower())).strip("_")
         if not slug:
             raise ValueError("Recipe name must produce a non-empty slug")
         recipe.slug = slug
