@@ -1,6 +1,5 @@
 """Test configuration and fixtures."""
 
-import os
 import sys
 import tempfile
 from importlib import import_module
@@ -17,17 +16,16 @@ flask_app = _create() if callable(_create) else getattr(_app, "app")
 _db = import_module("app.extensions").db
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def app():
     """Create and configure a test Flask application instance."""
-    # Create a temporary directory for test database and storage
-    db_fd, db_path = tempfile.mkstemp()
+    # Create a temporary directory for storage
     storage_dir = tempfile.mkdtemp()
 
     flask_app.config.update(
         {
             "TESTING": True,
-            "SQLALCHEMY_DATABASE_URI": f"sqlite:///{db_path}",
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
             "SQLALCHEMY_TRACK_MODIFICATIONS": False,
             "WTF_CSRF_ENABLED": False,
         }
@@ -44,9 +42,6 @@ def app():
 
     yield flask_app
 
-    # Cleanup
-    os.close(db_fd)
-    os.unlink(db_path)
     # Clean up storage directory
     import shutil
 
@@ -75,35 +70,36 @@ def runner(app):
     return app.test_cli_runner()
 
 
+def _create_sample_ingredient(db, slug: str = "test-ingredient", name: str = "Test Ingredient"):
+    from app.recipes.models import Ingredient
+
+    ingredient = Ingredient(slug=slug, name=name, density=1.0)
+    db.session.add(ingredient)
+    db.session.commit()
+    return ingredient
+
+
 @pytest.fixture
-def sample_recipe(db):
+def e2e_live_server(live_server):
+    """Use pytest-flask's managed live server fixture for e2e tests."""
+    yield live_server
+
+
+@pytest.fixture
+def sample_recipe(db, slug: str = "test-recipe", name: str = "Test Recipe"):
     """Create a sample recipe for testing."""
-    from app.recipes.models import Recipe, RecipeIngredient
+    from app.recipes.models import Recipe
 
-    # Depend on the `sample_ingredient` fixture for a related ingredient
-    # (pytest will resolve this dependency automatically)
-    # Create the recipe and a linking RecipeIngredient using relationships
-    # so SQLAlchemy sets foreign keys correctly.
-    recipe = Recipe(slug="test-recipe", name="Test Recipe", directions="1. Do this\n2. Do that")
+    recipe = Recipe(slug=slug, name=name, directions="1. Do this\n2. Do that")
     db.session.add(recipe)
-    db.session.flush()
-
-    # create a minimal RecipeIngredient in tests via relationship assignment
-    ri = RecipeIngredient(list="main", amount=1.0, unit="cup", recipe=recipe, ingredient=sample_ingredient(db))
-    db.session.add(ri)
     db.session.commit()
     return recipe
 
 
 @pytest.fixture
-def sample_ingredient(db):
+def sample_ingredient(db, slug: str = "test-ingredient", name: str = "Test Ingredient"):
     """Create a sample ingredient for testing."""
-    from app.recipes.models import Ingredient
-
-    ingredient = Ingredient(slug="test-ingredient", name="Test Ingredient", density=1.0)
-    db.session.add(ingredient)
-    db.session.commit()
-    return ingredient
+    return _create_sample_ingredient(db, slug=slug, name=name)
 
 
 @pytest.fixture
@@ -112,7 +108,9 @@ def sample_recipe_ingredient(db, sample_recipe, sample_ingredient):
     from app.recipes.models import RecipeIngredient
 
     # Create via relationships to ensure SQLAlchemy handles FK values
-    ri = RecipeIngredient(list="main", amount=2.0, unit="cups", recipe=sample_recipe, ingredient=sample_ingredient)
+    ri = RecipeIngredient(
+        ingredient_list="main", amount=2.0, unit="cups", recipe=sample_recipe, ingredient=sample_ingredient
+    )
     db.session.add(ri)
     db.session.commit()
     return ri

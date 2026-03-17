@@ -13,7 +13,13 @@ class Recipe(db.Model):
 
     name = db.Column(db.String(100), nullable=False)
 
-    # TODO: Add Users
+    cook_time = db.Column(db.Float(), nullable=True)
+    prep_time = db.Column(db.Float(), nullable=True)
+
+    cook_temp = db.Column(db.Float(), nullable=True)
+
+    servings = db.Column(db.Integer(), nullable=True)
+
     directions = db.Column(db.Text)
 
     images = db.Column(db.Text, nullable=True)
@@ -34,7 +40,7 @@ class Recipe(db.Model):
 
     @property
     def parsed_directions(self):
-        return
+        return "not implemented yet"
 
 
 class Ingredient(db.Model):
@@ -46,17 +52,17 @@ class Ingredient(db.Model):
     density = db.Column(db.Float, nullable=True)  # Use density in g/ml
 
 
-class RecipeIngredientSchema(db.Model):
-    list = db.Column(db.String(100), primary_key=True)
+class RecipeIngredient(db.Model):
+    ingredient_list = db.Column(db.String(100), primary_key=True)
 
     amount = db.Column(db.Float)
     unit = db.Column(db.String(20))
 
-    recipe_slug = db.Column(db.String(100), db.ForeignKey('recipe.slug'), primary_key=True)
-    ingredient_slug = db.Column(db.String(50), db.ForeignKey('ingredient.slug'), primary_key=True)
+    recipe_slug = db.Column(db.String(100), db.ForeignKey("recipe.slug"), primary_key=True)
+    ingredient_slug = db.Column(db.String(50), db.ForeignKey("ingredient.slug"), primary_key=True)
 
-    recipe = db.relationship('Recipe', back_populates='recipe_ingredients')
-    ingredient = db.relationship('Ingredient', back_populates='recipes')
+    recipe = db.relationship("Recipe", back_populates="recipe_ingredients")
+    ingredient = db.relationship("Ingredient", back_populates="recipes")
 
     _pretty = None
 

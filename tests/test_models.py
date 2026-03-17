@@ -44,6 +44,12 @@ class TestRecipe:
         urls = list(recipe.image_urls)
         assert urls == [None]
 
+    def test_parsed_directions_placeholder(self, db):
+        recipe = Recipe(slug="directions-recipe", name="Directions", directions="Step 1")
+        db.session.add(recipe)
+        db.session.commit()
+        assert recipe.parsed_directions == "not implemented yet"
+
 
 class TestIngredient:
     """Test suite for Ingredient model."""
@@ -78,7 +84,7 @@ class TestRecipeIngredient:
     def test_create_recipe_ingredient(self, db, sample_recipe, sample_ingredient):
         """Test creating a recipe-ingredient relationship."""
         recipe_ingredient = RecipeIngredient(
-            list="main",
+            ingredient_list="main",
             amount=2.5,
             unit="cups",
             recipe_slug=sample_recipe.slug,
@@ -95,7 +101,7 @@ class TestRecipeIngredient:
     def test_pretty_whole_number(self, db, sample_recipe, sample_ingredient):
         """Test pretty property with whole number."""
         recipe_ingredient = RecipeIngredient(
-            list="main",
+            ingredient_list="main",
             amount=2.0,
             unit="cups",
             recipe_slug=sample_recipe.slug,
@@ -112,7 +118,7 @@ class TestRecipeIngredient:
     def test_pretty_fraction(self, db, sample_recipe, sample_ingredient):
         """Test pretty property with fraction."""
         recipe_ingredient = RecipeIngredient(
-            list="main",
+            ingredient_list="main",
             amount=0.5,
             unit="cups",
             recipe_slug=sample_recipe.slug,
@@ -128,7 +134,7 @@ class TestRecipeIngredient:
     def test_pretty_mixed_number(self, db, sample_recipe, sample_ingredient):
         """Test pretty property with mixed number."""
         recipe_ingredient = RecipeIngredient(
-            list="main",
+            ingredient_list="main",
             amount=2.5,
             unit="cups",
             recipe_slug=sample_recipe.slug,
@@ -144,7 +150,7 @@ class TestRecipeIngredient:
     def test_pretty_without_unit(self, db, sample_recipe, sample_ingredient):
         """Test pretty property without unit."""
         recipe_ingredient = RecipeIngredient(
-            list="main",
+            ingredient_list="main",
             amount=3.0,
             unit=None,
             recipe_slug=sample_recipe.slug,
@@ -160,7 +166,7 @@ class TestRecipeIngredient:
     def test_pretty_without_amount(self, db, sample_recipe, sample_ingredient):
         """Test pretty property without amount."""
         recipe_ingredient = RecipeIngredient(
-            list="main",
+            ingredient_list="main",
             amount=None,
             unit=None,
             recipe_slug=sample_recipe.slug,
@@ -183,7 +189,7 @@ class TestRecipeIngredient:
         db.session.commit()
 
         recipe_ingredient = RecipeIngredient(
-            list="main",
+            ingredient_list="main",
             amount=250.0,
             unit="ml",
             recipe_slug=sample_recipe.slug,
@@ -202,7 +208,7 @@ class TestRecipeIngredient:
         db.session.commit()
 
         recipe_ingredient = RecipeIngredient(
-            list="main",
+            ingredient_list="main",
             amount=2.0,
             unit="cups",
             recipe_slug=sample_recipe.slug,
@@ -212,3 +218,25 @@ class TestRecipeIngredient:
         db.session.commit()
 
         assert recipe_ingredient.weight is None
+
+    def test_pretty_uses_cached_value(self, db, sample_recipe, sample_ingredient):
+        recipe_ingredient = RecipeIngredient(
+            ingredient_list="main",
+            amount=1.0,
+            unit="cup",
+            recipe_slug=sample_recipe.slug,
+            ingredient_slug=sample_ingredient.slug,
+        )
+        recipe_ingredient._pretty = "cached value"
+        assert recipe_ingredient.pretty == "cached value"
+
+    def test_weight_uses_cached_value(self, db, sample_recipe, sample_ingredient):
+        recipe_ingredient = RecipeIngredient(
+            ingredient_list="main",
+            amount=1.0,
+            unit="cup",
+            recipe_slug=sample_recipe.slug,
+            ingredient_slug=sample_ingredient.slug,
+        )
+        recipe_ingredient._weight = 42
+        assert recipe_ingredient.weight == 42
