@@ -1,0 +1,19 @@
+# Screenshots configuration for automated CI frontend capture.
+#
+# Each entry under `pages` describes one URL to screenshot.
+#
+#   path     – URL path relative to the server root (required).
+#   filename – output filename without extension (optional; derived from the
+#              URL path when omitted, e.g. /recipes/new/ -> recipes_new).
+#   exempt   – set to true to skip this page (e.g. pages still in development).
+#
+# Screenshots are saved to the `screenshots/` directory and uploaded as a CI
+# artifact named `frontend-screenshots`.
+
+pages:
+  - path: /recipes/
+    filename: recipes
+
+  - path: /recipes/new/
+    filename: new_recipe
+    exempt: true  # New-recipe page is still in development
