@@ -744,8 +744,9 @@ abstract.log*
 abstract.record*
 secring.*
 
-# IDE files
-.idea/
+# Project scripts (not virtualenv Scripts/ directory)
+!scripts/
+
 .vscode/
 *.iml
 
