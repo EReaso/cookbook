@@ -748,7 +748,7 @@ secring.*
 !scripts/
 
 .vscode/
-*.iml
+.idea/
 
 # Generated CSS files (built from SCSS)
 app/static/css/*.css
