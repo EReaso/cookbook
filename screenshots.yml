@@ -19,13 +19,12 @@
 # artifact named `frontend-screenshots`.
 
 pages:
-  - path: /recipes/
-    filename: recipes
-
   - path: /recipes/new/
     filename: new_recipe
-    exempt: true  # New-recipe page is still in development
-
+    
+  - path: /book/classic_pancakes/
+  - path: /book/tomato_soup
+  - path: /recipes/
 seed_data:
   ingredients:
     - slug: all_purpose_flour
