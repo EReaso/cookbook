@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - ereaso-create-recipes
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -46,6 +47,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: test-and-lint
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -77,3 +80,15 @@ jobs:
           path: screenshots/
           if-no-files-found: warn
 
+      - name: Commit screenshots on main push
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add screenshots/
+          if git diff --cached --quiet -- screenshots/; then
+            echo "No screenshot changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: update screenshots [skip ci]"
+          git push
