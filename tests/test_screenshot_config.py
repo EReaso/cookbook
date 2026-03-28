@@ -172,9 +172,7 @@ class TestSeedFromConfig:
                     "name": "Omelette",
                     "servings": 1,
                     "directions": "Beat and cook.",
-                    "recipe_ingredients": [
-                        {"ingredient_list": "main", "amount": 2.0, "ingredient_slug": "eggs"}
-                    ],
+                    "recipe_ingredients": [{"ingredient_list": "main", "amount": 2.0, "ingredient_slug": "eggs"}],
                 }
             ],
         }
@@ -195,4 +193,3 @@ class TestSeedFromConfig:
 
         assert db.session.query(Recipe).count() == 0
         assert db.session.query(Ingredient).count() == 0
-
