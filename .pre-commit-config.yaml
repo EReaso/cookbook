@@ -17,3 +17,19 @@ repos:
       - id: ruff-check
         args: [--fix]
       - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: build-scss
+        name: Build SCSS
+        language: system
+        entry: bash scripts/build_scss_hook.sh
+        files: ^app/static/scss/
+        pass_filenames: false
+
+      - id: generate-screenshots
+        name: Generate screenshots
+        language: system
+        entry: bash scripts/take_screenshots_hook.sh
+        pass_filenames: false
+        always_run: true
