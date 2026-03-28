@@ -200,6 +200,15 @@ View coverage report by opening `htmlcov/index.html` in your browser.
 pytest tests/test_models.py
 ```
 
+### Run screenshot capture manually
+
+To run the same screenshot generation step locally as CI:
+
+```bash
+python -m playwright install --with-deps chromium
+python scripts/take_screenshots.py --config screenshots.yml --output-dir screenshots
+```
+
 ## Development
 
 ### Code Style
