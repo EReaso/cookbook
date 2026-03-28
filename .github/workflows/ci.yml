@@ -44,6 +44,7 @@ jobs:
           python -m pytest tests -q
 
   screenshots:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: test-and-lint
@@ -89,22 +90,21 @@ jobs:
         run: |
           python scripts/take_screenshots.py
 
-      - name: Upload screenshots
+      - name: Upload screenshots artifact
         uses: actions/upload-artifact@v4
         with:
           name: frontend-screenshots
           path: screenshots/
           if-no-files-found: warn
 
-      - name: Commit screenshots on main push
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
+      - name: Commit and push screenshots
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add screenshots/
-          if git diff --cached --quiet -- screenshots/; then
-            echo "No screenshot changes to commit."
+          git add screenshots/ app/static/css/custom.css
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
             exit 0
           fi
-          git commit -m "chore: update screenshots [skip ci]"
+          git commit -m "chore: regenerate screenshots and CSS [skip ci]"
           git push
