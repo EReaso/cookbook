@@ -242,8 +242,6 @@ x86/
 arm/
 arm-p/
 translations/*.qm
-*.jpg
-*.jpeg
 *.jpe
 *.jif
 *.jfif
@@ -257,17 +255,12 @@ translations/*.qm
 *.jxr
 *.hdp
 *.wdp
-*.gif
 *.raw
-*.webp
-*.png
 *.apng
 *.mng
 *.tiff
 *.tif
-*.svg
 *.svgz
-*.pdf
 *.xbm
 *.bmp
 *.dib
@@ -378,8 +371,6 @@ _xmsgs/
 *.retry
 rerun/
 reports/
-screenshots/
-screenshot*.png
 test-servers/
 .bundle
 vendor
