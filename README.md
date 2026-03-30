@@ -82,7 +82,7 @@ pnpm run build
 The easiest way to get started is with the quickstart script:
 
 ```bash
-./quickstart.sh
+./scripts/quickstart.sh
 ```
 
 This script will:
