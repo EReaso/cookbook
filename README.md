@@ -12,6 +12,9 @@ A Flask-based web application for managing recipes with ingredients, images, and
 - Unit conversions for recipe ingredients
 - Ingredient density tracking for weight calculations
 
+## Contributing - Not just for devs!
+Obviously, software development help would be great, but **feature requests are really great too!** At some point, I will be happy with this repo and need more feature requests to fix. Please create a discussion post or issue. 
+
 ## Requirements
 
 - Python 3.10+
@@ -277,11 +280,11 @@ flask db downgrade
 
 This project uses GitHub Actions for continuous integration:
 
-- **Tests**: Runs on Python 3.10, 3.11, and 3.12
+- **Tests**: Runs on Python 3.12
 - **Linting**: Checks code quality with Ruff
 - **Coverage**: Uploads coverage reports to Codecov
 
-## Contributing
+## Contributing (again)
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
