@@ -3,18 +3,15 @@ name: CI
 on:
   pull_request:
   push:
-    branches:
-      - main
-      - ereaso-create-recipes
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  test-and-lint:
+  lint:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
@@ -25,6 +22,38 @@ jobs:
         with:
           python-version: "3.12"
           cache: "pip"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Lint
+        run: |
+          python -m ruff format --check .
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: lint
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install Python dependencies
         run: |
@@ -35,10 +64,6 @@ jobs:
         run: |
           python -m playwright install --with-deps chromium
 
-      - name: Lint
-        run: |
-          python -m ruff format --check .
-
       - name: Test
         run: |
           python -m pytest tests -q
@@ -46,7 +71,7 @@ jobs:
   screenshots:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: test-and-lint
+    needs: test
     permissions:
       contents: write
 
@@ -54,32 +79,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: "pip"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Setup pnpm
-        run: corepack enable
-
-      - name: Install Python dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
-
-      - name: Install frontend dependencies
-        run: |
           pnpm install --frozen-lockfile
 
       - name: Build SCSS
         run: |
           pnpm run build
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install Playwright browser
         run: |
