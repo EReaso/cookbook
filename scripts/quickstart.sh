@@ -5,6 +5,9 @@
 
 set -euo pipefail
 
+# Change to the repo root so all relative paths work regardless of CWD
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
 echo "Cookbook Quickstart Setup"
 echo "========================="
 echo ""
