@@ -1,3 +1,11 @@
+[project]
+name = "cookbook"
+version = "0.1.0"
+description = "Self-hosted recipe management website"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
 [tool.ruff]
 line-length = 120
 target-version = "py310"
