@@ -296,4 +296,4 @@ This project uses GitHub Actions for continuous integration:
 
 ## License
 
-This project is open source and available under the GPL 3.0 License.
+This project is open source and available under the AGPL 3.0 License.
