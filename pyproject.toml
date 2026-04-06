@@ -4,7 +4,18 @@ version = "0.1.0"
 description = "Self-hosted recipe management website"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "alembic>=1.13.0",
+    "flask>=3.0.0",
+    "flask-migrate>=4.0.5",
+    "flask-sqlalchemy>=3.1.1",
+    "gunicorn>=21.2.0",
+    "pint>=0.23",
+    "psycopg2-binary>=2.9.9",
+    "pydantic>=2.0.0",
+    "sqlalchemy>=2.0.0",
+    "werkzeug>=3.0.0",
+]
 
 [tool.ruff]
 line-length = 120
@@ -28,3 +39,25 @@ extend-select = ["I"]
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+[dependency-groups]
+dev = [
+    "alembic>=1.13.0",
+    "flask>=3.0.0",
+    "flask-migrate>=4.0.5",
+    "flask-sqlalchemy>=3.1.1",
+    "gunicorn>=21.2.0",
+    "pint>=0.23",
+    "playwright>=1.57.0",
+    "pre-commit>=3.6.0",
+    "psycopg2-binary>=2.9.9",
+    "pydantic>=2.0.0",
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-flask>=1.3.0",
+    "pytest-playwright>=0.7.0",
+    "pyyaml>=6.0.0",
+    "ruff>=0.11.0",
+    "sqlalchemy>=2.0.0",
+    "werkzeug>=3.0.0",
+]
