@@ -16,7 +16,7 @@ class TestRecipeCreation:
         response = client.post("/recipes/new/", data="not-json", content_type="text/plain")
         assert response.status_code == 400
 
-    def test_create_recipe(self, client, db):
+    def test_create_recipe_without_images(self, client, db):
         payload = {
             "name": "Test Recipe",
             "slug": _random_slug(),

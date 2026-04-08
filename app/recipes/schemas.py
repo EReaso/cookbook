@@ -1,9 +1,8 @@
 import re
 
-from pydantic import BaseModel, ConfigDict, Field, PositiveFloat, field_validator
-from sqlalchemy.orm import Session
-
 from app.recipes.models import Ingredient, Recipe, RecipeIngredient
+from pydantic import BaseModel, ConfigDict, Field, PositiveFloat, field_validator
+from sqlalchemy.orm.scoping import scoped_session as Session
 
 
 class IngredientSchema(BaseModel):
@@ -43,6 +42,14 @@ class CreateRecipe(BaseModel):
     sidebar: str | None = None
 
     recipe_ingredients: list[RecipeIngredientSchema]
+
+    images: list[str] | None = None
+
+    @field_validator("images", mode="after")
+    @classmethod
+    def empty_list_to_none(cls, value):
+        if isinstance(value, list) and len(value) == 0:
+            return None
 
     @field_validator("slug", "cook_time", "prep_time", "cook_temp", "servings", "sidebar", mode="before")
     @classmethod

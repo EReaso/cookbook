@@ -1,9 +1,9 @@
+import json
 from fractions import Fraction
 
+from app.extensions import db
 from pint import Quantity as Q_
 from pint import UnitRegistry
-
-from app.extensions import db
 
 ureg = UnitRegistry()
 
@@ -16,27 +16,25 @@ class Recipe(db.Model):
     cook_time = db.Column(db.Float(), nullable=True)
     prep_time = db.Column(db.Float(), nullable=True)
 
-    cook_temp = db.Column(db.Float(), nullable=True)
+    cook_temp = db.Column(db.Integer(), nullable=True)
 
-    servings = db.Column(db.Integer(), nullable=True)
+    servings = db.Column(db.Float(), nullable=True)
 
     directions = db.Column(db.Text)
+
+    sidebar = db.Column(db.Text, nullable=True)
+
+    recipe_ingredients = db.relationship("RecipeIngredient", back_populates="recipe", cascade="all, delete-orphan")
+    ingredients = db.Column(db.Text)
 
     images = db.Column(db.Text, nullable=True)
 
     @property
-    def image_urls(self):
+    def image_paths(self) -> list[str]:
         if self.images:
-            for image in self.images.split(","):
-                yield f"/images/{image}"
+            return [f"/images/{i}" for i in json.loads(self.images)]
         else:
-            yield None
-
-    sidebar = db.Column(db.Text, nullable=True)
-
-    ingredients = db.Column(db.Text)
-
-    recipe_ingredients = db.relationship("RecipeIngredient", back_populates="recipe", cascade="all, delete-orphan")
+            return []
 
     @property
     def parsed_directions(self):
@@ -49,7 +47,7 @@ class Ingredient(db.Model):
 
     recipes = db.relationship("RecipeIngredient", back_populates="ingredient", cascade="all, delete-orphan")
 
-    density = db.Column(db.Float, nullable=True)  # Use density in g/ml
+    density = db.Column(db.Float(), nullable=True)  # Use density in g/ml
 
 
 class RecipeIngredient(db.Model):
