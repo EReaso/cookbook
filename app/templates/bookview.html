@@ -50,7 +50,7 @@
 
 		{#		Right side - Image#}
 		<div class="p-3 col-6 flex-grow-0 flex-shrink-0 d-flex flex-column align-content-center justify-content-center gap-1 flex-wrap">
-			{% for image in recipe.image_urls %}
+			{% for image in recipe.image_paths %}
 				<img src="{{ image }}" class="img-fluid rounded-5 flex-shrink-1 flex-grow-0"
 				     alt="{{ recipe.name }}">
 			{% endfor %}

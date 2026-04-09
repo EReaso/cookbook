@@ -46,10 +46,3 @@ class TestRecipeRoutes:
         """A non-matching recipe URL currently returns 404."""
         response = client.get("/recipes/nonexistent-recipe/")
         assert response.status_code == 404
-
-    def test_post_recipe(self, client, db):
-        """Test posting a new recipe (currently not implemented)."""
-        response = client.post("/recipes/", json={"name": "New Recipe"})
-        # The route is not implemented, so we expect it to pass through
-        # without error but not do anything
-        assert response.status_code in [200, 404, 405, 500]

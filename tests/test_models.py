@@ -21,28 +21,28 @@ class TestRecipe:
         assert recipe.name == "Chocolate Cake"
         assert recipe.directions == "Mix and bake"
 
-    def test_recipe_image_urls_with_images(self, db):
+    def test_recipe_image_paths_with_images(self, db):
         """Test image_urls property with images."""
         recipe = Recipe(
             slug="test-recipe",
             name="Test",
-            images="image1.jpg,image2.jpg",
+            images='["image1.jpg","image2.jpg"]',
         )
         db.session.add(recipe)
         db.session.commit()
 
-        urls = list(recipe.image_urls)
+        urls = list(recipe.image_paths)
         assert "/images/image1.jpg" in urls
         assert "/images/image2.jpg" in urls
 
-    def test_recipe_image_urls_without_images(self, db):
+    def test_recipe_image_paths_without_images(self, db):
         """Test image_urls property without images."""
         recipe = Recipe(slug="test-recipe", name="Test")
         db.session.add(recipe)
         db.session.commit()
 
-        urls = list(recipe.image_urls)
-        assert urls == [None]
+        urls = list(recipe.image_paths)
+        assert urls == []
 
     def test_parsed_directions_placeholder(self, db):
         recipe = Recipe(slug="directions-recipe", name="Directions", directions="Step 1")

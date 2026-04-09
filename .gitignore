@@ -739,7 +739,8 @@ secring.*
 !scripts/
 
 .vscode/
-.idea/
+.idea/*
+!.idea/cookbook.iml
 
 # Generated CSS files (built from SCSS)
 app/static/css/*.css
