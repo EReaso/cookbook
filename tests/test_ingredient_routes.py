@@ -43,6 +43,7 @@ class TestIngredientRoutes:
         # Should return empty ingredient_list when no query or no matching results
         data = response.get_json()
         assert isinstance(data, list)
+        assert len(data) == 0
 
     def test_datalist_options_with_query(self, client, db):
         """Test datalist options endpoint with query parameter."""
