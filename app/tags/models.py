@@ -1,11 +1,17 @@
+from sqlalchemy.orm import validates
+
 from app.extensions import db
 
 
 class Tag(db.Model):
-    name = db.Column(db.String(100), unique=True, case_sensitive=False, primary_key=True)
+    name = db.Column(db.String(100), unique=True, primary_key=True)
 
     recipes = db.relationship("Recipe", secondary="recipe_tag", back_populates="tags")
     ingredients = db.relationship("Ingredient", secondary="ingredient_tag", back_populates="tags")
+
+    @validates("name")
+    def uppercase_name(self, key, name):
+        return name.lower()
 
 
 class RecipeTag(db.Model):
