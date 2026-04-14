@@ -68,9 +68,6 @@ class TestTags:
         assert tag.recipes == [recipe1, recipe2]
 
     def test_tag_name_is_not_case_sensitive(self, db):
-        """[DISABLED] Test that tag names are case-insensitive."""
-        # TODO: fix case sensitivity in Tag model and re-enable this test
-        return
         tag1 = Tag(name="Dinner")
         tag2 = Tag(name="dinner")
         db.session.add(tag1)
