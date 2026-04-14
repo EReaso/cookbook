@@ -1,8 +1,11 @@
 import re
 
-from app.recipes.models import Ingredient, Recipe, RecipeIngredient
 from pydantic import BaseModel, ConfigDict, Field, PositiveFloat, field_validator
+from sqlalchemy import select
 from sqlalchemy.orm.scoping import scoped_session as Session
+
+from app.recipes.models import Ingredient, Recipe, RecipeIngredient
+from app.tags.models import RecipeTag, Tag
 
 
 class IngredientSchema(BaseModel):
@@ -45,6 +48,8 @@ class CreateRecipe(BaseModel):
 
     images: list[str] | None = None
 
+    tags: list[str] | None = None
+
     @field_validator("images", mode="after")
     @classmethod
     def empty_list_to_none(cls, value):
@@ -59,11 +64,17 @@ class CreateRecipe(BaseModel):
         return value
 
     def to_db(self, session: Session) -> Recipe:
-        recipe = Recipe(**self.model_dump(mode="python", exclude={"recipe_ingredients"}, exclude_unset=True))
+        recipe = Recipe(**self.model_dump(mode="python", exclude={"recipe_ingredients", "tags"}, exclude_unset=True))
         slug = re.sub(r"_+", "_", re.sub(r"[^_a-z0-9]+", "_", (recipe.slug or recipe.name).lower())).strip("_")
         if not slug:
             raise ValueError("Recipe name must produce a non-empty slug")
         recipe.slug = slug
+
+        for i in self.tags or []:
+            if not (tag := session.execute(select(Tag).where(Tag.name == i)).scalar_one_or_none()):
+                tag = Tag(name=i)
+                session.add(tag)
+            session.add(RecipeTag(recipe=recipe, tag=tag))
 
         for i in self.recipe_ingredients:
             if (ingredient := session.get(Ingredient, i.slug)) is None:

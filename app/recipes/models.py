@@ -1,9 +1,10 @@
 import json
 from fractions import Fraction
 
-from app.extensions import db
 from pint import Quantity as Q_
 from pint import UnitRegistry
+
+from app.extensions import db
 
 ureg = UnitRegistry()
 
@@ -36,6 +37,8 @@ class Recipe(db.Model):
         else:
             return []
 
+    tags = db.relationship("Tag", secondary="recipe_tag", back_populates="recipes")
+
     @property
     def parsed_directions(self):
         return "not implemented yet"
@@ -48,6 +51,8 @@ class Ingredient(db.Model):
     recipes = db.relationship("RecipeIngredient", back_populates="ingredient", cascade="all, delete-orphan")
 
     density = db.Column(db.Float(), nullable=True)  # Use density in g/ml
+
+    tags = db.relationship("Tag", secondary="ingredient_tag", back_populates="ingredients")
 
 
 class RecipeIngredient(db.Model):
