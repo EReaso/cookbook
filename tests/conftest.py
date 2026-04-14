@@ -2,6 +2,7 @@
 
 import sys
 import tempfile
+import uuid
 from importlib import import_module
 from pathlib import Path
 
@@ -10,10 +11,17 @@ import pytest
 # Ensure repository root is on sys.path so `import app` works in tests
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from app.recipes.models import Recipe
+from app.tags.models import Tag
+
 _app = import_module("app")
 _create = getattr(_app, "create_app", None)
 flask_app = _create() if callable(_create) else getattr(_app, "app")
 _db = import_module("app.extensions").db
+
+
+def _random_slug() -> str:
+    return f"test_slug_{uuid.uuid4().hex[:8]}"
 
 
 @pytest.fixture(scope="function")
@@ -86,14 +94,18 @@ def e2e_live_server(live_server):
 
 
 @pytest.fixture
-def sample_recipe(db, slug: str = "test-recipe", name: str = "Test Recipe"):
-    """Create a sample recipe for testing."""
-    from app.recipes.models import Recipe
+def sample_recipe(db):
+    """Returns a function to generate a sample recipe for testing."""
 
-    recipe = Recipe(slug=slug, name=name, directions="1. Do this\n2. Do that")
-    db.session.add(recipe)
-    db.session.commit()
-    return recipe
+    def _create_sample_recipe(db=db, slug: str | None = None, name: str = "Test Recipe"):
+        recipe = Recipe(
+            slug=slug or _random_slug(), name=name or slug or _random_slug(), directions="1. Do this\n2. Do that"
+        )
+        db.session.add(recipe)
+        db.session.commit()
+        return recipe
+
+    return _create_sample_recipe
 
 
 @pytest.fixture
@@ -103,13 +115,26 @@ def sample_ingredient(db, slug: str = "test-ingredient", name: str = "Test Ingre
 
 
 @pytest.fixture
+def sample_tag(db):
+    """Returns a function to generate a sample tag for testing."""
+
+    def _create_sample_tag(db=db, name: str | None = None):
+        tag = Tag(name=name or _random_slug())
+        db.session.add(tag)
+        db.session.commit()
+        return tag
+
+    return _create_sample_tag
+
+
+@pytest.fixture
 def sample_recipe_ingredient(db, sample_recipe, sample_ingredient):
     """Create a sample recipe-ingredient relationship for testing."""
     from app.recipes.models import RecipeIngredient
 
     # Create via relationships to ensure SQLAlchemy handles FK values
     ri = RecipeIngredient(
-        ingredient_list="main", amount=2.0, unit="cups", recipe=sample_recipe, ingredient=sample_ingredient
+        ingredient_list="main", amount=2.0, unit="cups", recipe=sample_recipe(db), ingredient=sample_ingredient
     )
     db.session.add(ri)
     db.session.commit()

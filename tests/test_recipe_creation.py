@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 from app.recipes.models import Recipe
+from app.tags.models import Tag
 
 
 def _random_slug() -> str:
@@ -102,3 +103,36 @@ class TestRecipeCreation:
         assert first.status_code == 201
         second = client.post("/recipes/new/", json=payload)
         assert second.status_code == 400
+
+    def test_create_recipe_with_tags(self, client, db):
+        payload = {
+            "name": "Tagged recipe",
+            "slug": _random_slug(),
+            "directions": "Test directions",
+            "tags": ["Dinner", "Quick"],
+            "recipe_ingredients": [{"slug": "flour", "name": "Flour"}],
+        }
+
+        response = client.post("/recipes/new/", json=payload)
+
+        assert response.status_code == 201
+        recipe = db.session.get(Recipe, payload["slug"])
+        assert recipe is not None
+        assert sorted(tag.name for tag in recipe.tags) == ["Dinner", "Quick"]
+
+    def test_create_recipe_reuses_existing_tag(self, client, db):
+        db.session.add(Tag(name="Dinner"))
+        db.session.commit()
+
+        payload = {
+            "name": "Tagged recipe",
+            "slug": _random_slug(),
+            "directions": "Test directions",
+            "tags": ["Dinner"],
+            "recipe_ingredients": [{"slug": "flour", "name": "Flour"}],
+        }
+
+        response = client.post("/recipes/new/", json=payload)
+
+        assert response.status_code == 201
+        assert Tag.query.filter_by(name="Dinner").count() == 1

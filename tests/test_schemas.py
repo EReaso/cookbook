@@ -1,8 +1,10 @@
-"""Tests for recipe schemas."""
+"""Tests for schemas."""
 
 import pytest
+from sqlalchemy import func, select
 
 from app.recipes.schemas import CreateRecipe
+from app.tags.models import Tag
 
 
 class TestCreateRecipeSchema:
@@ -15,3 +17,47 @@ class TestCreateRecipeSchema:
 
         with pytest.raises(ValueError, match="non-empty slug"):
             data.to_db(db.session)
+
+    def test_to_db_creates_recipe_tag_associations(self, db):
+        data = CreateRecipe(
+            name="Tagged recipe",
+            directions="mix",
+            tags=["Dinner", "Quick"],
+            recipe_ingredients=[{"slug": "flour", "name": "Flour"}],
+        )
+
+        recipe = data.to_db(db.session)
+        db.session.commit()
+
+        assert sorted(tag.name for tag in recipe.tags) == ["Dinner", "Quick"]
+
+    def test_to_db_reuses_existing_tag_rows(self, db):
+        db.session.add(Tag(name="Dinner"))
+        db.session.commit()
+
+        data = CreateRecipe(
+            name="Pasta",
+            directions="mix",
+            tags=["Dinner"],
+            recipe_ingredients=[{"slug": "flour", "name": "Flour"}],
+        )
+
+        data.to_db(db.session)
+        db.session.commit()
+
+        total_dinner_tags = db.session.execute(
+            select(func.count()).select_from(Tag).where(Tag.name == "Dinner")
+        ).scalar_one()
+        assert total_dinner_tags == 1
+
+    def test_to_db_allows_omitting_tags(self, db):
+        data = CreateRecipe(
+            name="No tags",
+            directions="mix",
+            recipe_ingredients=[{"slug": "flour", "name": "Flour"}],
+        )
+
+        recipe = data.to_db(db.session)
+        db.session.commit()
+
+        assert recipe.tags == []
