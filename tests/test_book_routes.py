@@ -5,6 +5,7 @@ from app.recipes.models import Ingredient, RecipeIngredient
 
 class TestBookRoutes:
     def test_book_view_renders_grouped_ingredients(self, client, db, sample_recipe):
+        recipe = sample_recipe(db)
         flour = Ingredient(slug="flour-book", name="Flour")
         salt = Ingredient(slug="salt-book", name="Salt")
         db.session.add_all([flour, salt])
@@ -14,7 +15,7 @@ class TestBookRoutes:
                 ingredient_list="Dry",
                 amount=1.0,
                 unit="cup",
-                recipe=sample_recipe,
+                recipe=recipe,
                 ingredient=flour,
             )
         )
@@ -23,13 +24,13 @@ class TestBookRoutes:
                 ingredient_list="Seasoning",
                 amount=0.5,
                 unit="tsp",
-                recipe=sample_recipe,
+                recipe=recipe,
                 ingredient=salt,
             )
         )
         db.session.commit()
 
-        response = client.get(f"/book/{sample_recipe.slug}/")
+        response = client.get(f"/book/{recipe.slug}/")
 
         assert response.status_code == 200
         assert b"Dry" in response.data

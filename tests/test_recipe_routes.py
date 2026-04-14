@@ -13,9 +13,10 @@ class TestRecipeRoutes:
 
     def test_get_recipes_with_data(self, client, db, sample_recipe):
         """Test getting recipes with data."""
+        recipe = sample_recipe(db)
         response = client.get("/recipes/")
         assert response.status_code == 200
-        assert sample_recipe.name.encode() in response.data
+        assert recipe.name.encode() in response.data
 
     def test_get_recipes_pagination(self, client, db):
         """Test recipe pagination."""
@@ -39,7 +40,8 @@ class TestRecipeRoutes:
 
     def test_get_single_recipe_endpoint_not_implemented(self, client, db, sample_recipe):
         """The placeholder single-recipe endpoint currently returns 405."""
-        response = client.get(f"/recipes/get/{sample_recipe.slug}/")
+        recipe = sample_recipe(db)
+        response = client.get(f"/recipes/get/{recipe.slug}/")
         assert response.status_code == 405
 
     def test_get_nonexistent_recipe_route(self, client, db):
