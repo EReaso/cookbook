@@ -1,22 +1,21 @@
 """Tests for schemas."""
 
 import pytest
+from pydantic import ValidationError
 from sqlalchemy import func, select
 
-from app.recipes.schemas import CreateRecipe
+from app.recipes.schemas import CreateRecipe, slugify
 from app.tags.models import Tag
 
 
 class TestCreateRecipeSchema:
-    def test_to_db_rejects_empty_slug_after_slugify(self, db):
-        data = CreateRecipe(
-            name="!!!",
-            directions="x",
-            recipe_ingredients=[{"slug": "flour", "name": "Flour"}],
-        )
-
-        with pytest.raises(ValueError, match="non-empty slug"):
-            data.to_db(db.session)
+    def test_to_db_rejects_empty_slug_after_slugify(self):
+        with pytest.raises(ValidationError, match="non-empty slug"):
+            CreateRecipe(
+                name="!!!",
+                directions="x",
+                recipe_ingredients=[{"slug": "flour", "name": "Flour"}],  # type: ignore
+            )
 
     def test_to_db_creates_recipe_tag_associations(self, db):
         data = CreateRecipe(
@@ -39,7 +38,7 @@ class TestCreateRecipeSchema:
             name="Pasta",
             directions="mix",
             tags=["Dinner"],
-            recipe_ingredients=[{"slug": "flour", "name": "Flour"}],
+            recipe_ingredients=[{"slug": "flour", "name": "Flour"}],  # type: ignore
         )
 
         data.to_db(db.session)
@@ -54,10 +53,21 @@ class TestCreateRecipeSchema:
         data = CreateRecipe(
             name="No tags",
             directions="mix",
-            recipe_ingredients=[{"slug": "flour", "name": "Flour"}],
+            recipe_ingredients=[{"slug": "flour", "name": "Flour"}],  # type: ignore
         )
 
         recipe = data.to_db(db.session)
         db.session.commit()
 
         assert recipe.tags == []
+
+    def test_slug_generation_on_init(self):
+        data = CreateRecipe(
+            name="Boston Baked Beans: a classic!",
+            directions="mix",
+            recipe_ingredients=[],
+        )
+        assert data.slug == slugify(data.name)
+
+    def test_slugify(self):
+        assert slugify("Boston Baked Beans: a classic!") == "boston_baked_beans_a_classic"

@@ -18,11 +18,23 @@
                 <p class="card-text">Inputs are optional</p></div>
             <div class="form-group d-flex flex-column gap-3" id="metadata">
                 <ul class="list-group list-group-flush input-container">
-                    <li class="input-row list-group-item d-flex justify-content-between align-content-center">
-                        <label class="form-label flex-grow-1 me-md-5 me-sm-4 me-3 text-nowrap" for="title">Title</label>
-                        <input class="form-control"
-                               id="title" name="title"/>
-                    </li>
+
+                    {% for label, name, input_type in (
+                ("Title", "title", "text"),
+                ("Slug", "slug", "text"),
+                ("Cook Time (minutes)", "cook_time", "number"),
+                ("Cook Temp", "cook_temp", "number"),
+                ("Prep Time (minutes)", "prep_time", "number"),
+                ("Servings", "servings", "number")
+                ) %}
+                        {# TODO: Recipe Tag Field w/ badge-style input (contenteditable??)#}
+                        <li class="input-row list-group-item d-flex justify-content-between align-content-center">
+                            <label class="form-label flex-grow-1 me-md-5 me-sm-4 me-3 text-nowrap"
+                                   for="{{ name }}">{{ label }}</label>
+                            <input class="form-control"
+                                   id="{{ name }}" name="{{ name }}"/>
+                        </li>
+                    {% endfor %}
                 </ul>
             </div>
         </form>

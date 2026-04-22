@@ -1,4 +1,4 @@
-from app.recipes.schemas import CreateRecipe
+from app.recipes.schemas import CreateRecipe, slugify
 
 
 def _stub_recipe_submit(page):
@@ -115,4 +115,21 @@ def test_new_recipe_slug_generation_from_name(page, e2e_live_server):
     payload = request_info.value.post_data_json
 
     assert payload["name"] == "Great Grandma's Famous Apple Pie!"
-    assert payload["slug"] == "great_grandma_s_famous_apple_pie_"
+    assert payload["slug"] == slugify(payload["name"])
+
+
+def test_consistent_slug_generation_with_backend(page, e2e_live_server):
+    _stub_recipe_submit(page)
+    page.goto(e2e_live_server.url("/recipes/new/"))
+
+    page.fill("#title", "Spaghetti & Meatballs: An Italian Classic")
+    page.once("dialog", lambda dialog: dialog.dismiss())
+    with page.expect_request(
+        lambda req: req.method == "POST" and req.url.rstrip("/").endswith("recipes/new")
+    ) as request_info:
+        page.click("#submit")
+
+    payload = request_info.value.post_data_json
+
+    assert payload["name"] == "Spaghetti & Meatballs: An Italian Classic"
+    assert payload["slug"] == slugify(payload["name"])

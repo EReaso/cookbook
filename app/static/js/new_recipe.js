@@ -1,26 +1,13 @@
-const inputs = [
-    // Label, name/id, type
-    ["Slug", "slug", "text"],
-    ["Cook Time (minutes)", "cook_time", "number"],
-    ["Cook Temp", "cook_temp", "number"],
-    ["Prep Time (minutes)", "prep_time", "number"],
-    ["Servings", "servings", "number"]
-]
-
-for (let i of inputs) {
-    let input = document.querySelector(".input-row").cloneNode(true)
-    input.querySelector("label").innerText = i[0]
-    input.querySelector("input").setAttribute("name", i[1])
-    input.querySelector("input").setAttribute("id", i[1])
-    input.querySelector("input").setAttribute("type", i[2])
-    input.querySelector("label").setAttribute("for", i[1])
-    document.querySelector(".input-container").appendChild(input)
+function slugify(value) {
+    return (value || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/_+/g, "_")
+        .replace(/^_+|_+$/g, "")
 }
 
-// Disable slug input and auto-update on title change
-document.querySelector("#slug").disabled = true
 document.querySelector("#title").addEventListener("input", (e) => {
-    document.querySelector("#slug").value = e.target.value.toLowerCase().replace(/[^_a-z0-9]/g, "_")
+    document.querySelector("#slug").value = slugify(e.target.value)
 })
 
 function create_ingredient(doFocus = true) {
@@ -119,10 +106,6 @@ const RECIPE_DRAFT_KEY = "new_recipe_draft_v1"
 const DRAFT_SAVE_DEBOUNCE_MS = 300
 
 let draftSaveTimer = null
-
-function slugify(value) {
-    return (value || "").toLowerCase().replace(/[^_a-z0-9]+/g, "_").replace(/^_+|_+$/g, "")
-}
 
 function get_recipe_payload() {
     let data = Object.fromEntries(new FormData(document.querySelector("#recipe-metadata")))
