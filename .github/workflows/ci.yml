@@ -14,30 +14,39 @@ env:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    container:
+      image: python:3.12-slim
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: astral-sh/setup-uv@v5
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/uv
-            ~/.local/share/uv
-          key: ${{ runner.os }}-uv-${{ env.PYTHON_VERSION }}
+      - name: Install uv
+        run: pip install uv
 
       - run: uvx ruff format --check .
 
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    container:
+      image: python:3.12-slim
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: astral-sh/setup-uv@v5
+      - name: Install system deps (Playwright)
+        run: |
+          apt-get update
+          apt-get install -y \
+            curl ca-certificates \
+            libnss3 libatk1.0-0 libatk-bridge2.0-0 \
+            libcups2 libdrm2 libxkbcommon0 \
+            libxcomposite1 libxdamage1 libxrandr2 \
+            libgbm1 libasound2 libpangocairo-1.0-0 \
+            libx11-xcb1 libxcb1 libxext6 libxfixes3 \
+            libglib2.0-0 libgtk-3-0
+
+      - name: Install uv
+        run: pip install uv
 
       - uses: actions/cache@v4
         with:
@@ -45,6 +54,11 @@ jobs:
             ~/.cache/uv
             ~/.local/share/uv
           key: ${{ runner.os }}-uv-${{ env.PYTHON_VERSION }}
+
+      - uses: actions/cache@v4
+        with:
+          path: .venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('requirements-dev.txt') }}
 
       - uses: actions/cache@v4
         with:
@@ -54,16 +68,19 @@ jobs:
       - name: Install deps
         run: |
           uv venv --python $PYTHON_VERSION
-          uv pip install --upgrade -r requirements-dev.txt
+          uv pip install -r requirements-dev.txt
 
       - name: Install browsers
-        run: uv run playwright install --with-deps chromium
+        run: uv run playwright install chromium
 
       - name: Test
         run: uv run pytest tests -q
 
   screenshots:
     runs-on: ubuntu-latest
+    container:
+      image: python:3.12-slim
+
     timeout-minutes: 15
     needs: [lint, test]
     permissions:
@@ -74,15 +91,26 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
+      - name: Install system deps (Playwright + Node)
+        run: |
+          apt-get update
+          apt-get install -y \
+            curl ca-certificates \
+            nodejs npm \
+            libnss3 libatk1.0-0 libatk-bridge2.0-0 \
+            libcups2 libdrm2 libxkbcommon0 \
+            libxcomposite1 libxdamage1 libxrandr2 \
+            libgbm1 libasound2 libpangocairo-1.0-0 \
+            libx11-xcb1 libxcb1 libxext6 libxfixes3 \
+            libglib2.0-0 libgtk-3-0
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: latest
+      - name: Setup pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
-      - uses: astral-sh/setup-uv@v5
+      - name: Install uv
+        run: pip install uv
 
       - uses: actions/cache@v4
         with:
@@ -90,6 +118,11 @@ jobs:
             ~/.cache/uv
             ~/.local/share/uv
           key: ${{ runner.os }}-uv-${{ env.PYTHON_VERSION }}
+
+      - uses: actions/cache@v4
+        with:
+          path: .venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('requirements-dev.txt') }}
 
       - uses: actions/cache@v4
         with:
@@ -104,14 +137,14 @@ jobs:
       - name: Install deps
         run: |
           uv venv --python $PYTHON_VERSION
-          uv pip install --upgrade -r requirements-dev.txt
-          pnpm install --frozen-lockfile
+          uv pip install -r requirements-dev.txt
+          pnpm install --frozen-lockfile --prefer-offline
 
       - name: Build frontend
         run: pnpm run build
 
       - name: Install browsers
-        run: uv run playwright install --with-deps chromium
+        run: uv run playwright install chromium
 
       - name: Generate screenshots
         run: uv run python scripts/take_screenshots.py
