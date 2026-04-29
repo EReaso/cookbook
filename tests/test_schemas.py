@@ -1,10 +1,9 @@
 """Tests for schemas."""
 
 import pytest
-from sqlalchemy import func, select
-
 from app.recipes.schemas import CreateRecipe
 from app.tags.models import Tag
+from sqlalchemy import func, select
 
 
 class TestCreateRecipeSchema:
@@ -22,14 +21,14 @@ class TestCreateRecipeSchema:
         data = CreateRecipe(
             name="Tagged recipe",
             directions="mix",
-            tags=["Dinner", "Quick"],
+            tags=["dinner", "quick"],
             recipe_ingredients=[{"slug": "flour", "name": "Flour"}],
         )
 
         recipe = data.to_db(db.session)
         db.session.commit()
 
-        assert sorted(tag.name for tag in recipe.tags) == ["Dinner", "Quick"]
+        assert sorted(tag.name for tag in recipe.tags) == ["dinner", "quick"]
 
     def test_to_db_reuses_existing_tag_rows(self, db):
         db.session.add(Tag(name="Dinner"))
@@ -38,7 +37,7 @@ class TestCreateRecipeSchema:
         data = CreateRecipe(
             name="Pasta",
             directions="mix",
-            tags=["Dinner"],
+            tags=["dinner"],
             recipe_ingredients=[{"slug": "flour", "name": "Flour"}],
         )
 
@@ -46,7 +45,7 @@ class TestCreateRecipeSchema:
         db.session.commit()
 
         total_dinner_tags = db.session.execute(
-            select(func.count()).select_from(Tag).where(Tag.name == "Dinner")
+            select(func.count()).select_from(Tag).where(Tag.name == "dinner")
         ).scalar_one()
         assert total_dinner_tags == 1
 
