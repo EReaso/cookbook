@@ -9,164 +9,104 @@ permissions:
   contents: read
 
 env:
-  PYTHON_VERSION: "3.12"
+  PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     container:
-      image: python:3.12-slim
+      image: ghcr.io/ereaso/ci-base:latest
+    timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install uv
-        run: pip install uv
-
-      - run: uvx ruff format --check .
+      - name: Lint
+        run: uvx ruff format --check .
 
   test:
     runs-on: ubuntu-latest
     container:
-      image: python:3.12-slim
+      image: ghcr.io/ereaso/ci-base:latest
+    timeout-minutes: 30
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install system deps (Playwright)
-        run: |
-          apt-get update
-          apt-get install -y \
-            curl ca-certificates \
-            libnss3 libatk1.0-0 libatk-bridge2.0-0 \
-            libcups2 libdrm2 libxkbcommon0 \
-            libxcomposite1 libxdamage1 libxrandr2 \
-            libgbm1 libasound2 libpangocairo-1.0-0 \
-            libx11-xcb1 libxcb1 libxext6 libxfixes3 \
-            libglib2.0-0 libgtk-3-0
-
-      - name: Install uv
-        run: pip install uv
-
-      - uses: actions/cache@v4
+      - name: Cache uv
+        uses: actions/cache@v4
         with:
-          path: |
-            ~/.cache/uv
-            ~/.local/share/uv
-          key: ${{ runner.os }}-uv-${{ env.PYTHON_VERSION }}
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
 
-      - uses: actions/cache@v4
-        with:
-          path: .venv
-          key: ${{ runner.os }}-venv-${{ hashFiles('requirements-dev.txt') }}
-
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('requirements-dev.txt') }}
-
-      - name: Install deps
-        run: |
-          uv venv --python $PYTHON_VERSION
-          uv pip install -r requirements-dev.txt
-
-      - name: Install browsers
-        run: uv run playwright install chromium
+      - name: Install Python dependencies
+        run: uv pip install --system -r requirements-dev.txt
 
       - name: Test
-        run: uv run pytest tests -q
+        run: pytest tests -q
 
   screenshots:
     runs-on: ubuntu-latest
     container:
-      image: python:3.12-slim
-
+      image: ghcr.io/ereaso/ci-base:latest
     timeout-minutes: 15
     needs: [lint, test]
     permissions:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install system deps (Playwright + Node)
-        run: |
-          apt-get update
-          apt-get install -y \
-            curl ca-certificates \
-            nodejs npm \
-            libnss3 libatk1.0-0 libatk-bridge2.0-0 \
-            libcups2 libdrm2 libxkbcommon0 \
-            libxcomposite1 libxdamage1 libxrandr2 \
-            libgbm1 libasound2 libpangocairo-1.0-0 \
-            libx11-xcb1 libxcb1 libxext6 libxfixes3 \
-            libglib2.0-0 libgtk-3-0
-
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
-
-      - name: Install uv
-        run: pip install uv
-
-      - uses: actions/cache@v4
+      - name: Cache uv
+        uses: actions/cache@v4
         with:
-          path: |
-            ~/.cache/uv
-            ~/.local/share/uv
-          key: ${{ runner.os }}-uv-${{ env.PYTHON_VERSION }}
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
 
-      - uses: actions/cache@v4
-        with:
-          path: .venv
-          key: ${{ runner.os }}-venv-${{ hashFiles('requirements-dev.txt') }}
-
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('requirements-dev.txt') }}
-
-      - uses: actions/cache@v4
+      - name: Cache pnpm store
+        uses: actions/cache@v4
         with:
           path: ~/.local/share/pnpm/store
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
 
-      - name: Install deps
+      - name: Install dependencies
         run: |
-          uv venv --python $PYTHON_VERSION
-          uv pip install -r requirements-dev.txt
-          pnpm install --frozen-lockfile --prefer-offline
+          uv pip install --system -r requirements-dev.txt
+          pnpm install --frozen-lockfile
 
-      - name: Build frontend
+      - name: Build SCSS
         run: pnpm run build
 
-      - name: Install browsers
-        run: uv run playwright install chromium
-
       - name: Generate screenshots
-        run: uv run python scripts/take_screenshots.py
+        run: python scripts/take_screenshots.py
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
         with:
           name: frontend-screenshots
           path: screenshots/
           if-no-files-found: warn
 
-      - name: Commit screenshots
+      - name: Commit screenshots on main push
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
           git add screenshots/
-
           if git diff --cached --quiet -- screenshots/; then
-            echo "No changes"
+            echo "No screenshot changes to commit."
             exit 0
           fi
-
           git commit -m "chore: update screenshots [skip ci]"
           git push
