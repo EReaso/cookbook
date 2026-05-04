@@ -1,0 +1,17 @@
+name: Sync to Gitea
+on:
+  push:
+    branches: ['**']
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    if: github.server_url == 'https://github.com'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Push to Gitea
+        run: |
+          git remote add gitea https://${{ secrets.GITEA_USER }}:${{ secrets.GITEA_TOKEN }}@git.raccoonsarecool.xyz/EReaso/cookbook.git
+          git push gitea HEAD:refs/heads/${{ github.ref_name }}
