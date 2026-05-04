@@ -1,3 +1,5 @@
+//TODO: refactor for maintainability
+
 function slugify(value) {
     return (value || "")
         .toLowerCase()
@@ -59,7 +61,7 @@ function delete_ingredient(row) {
     generate_ingredient_options()
 }
 
-// Add more ingredient rows when the bottom row is selected
+// Register event listeners to add more ingredient rows when the bottom row is selected
 document.querySelectorAll("#create-ingredient-button").forEach(i => i.addEventListener("click", create_ingredient))
 
 document.querySelector("#direction-editor-fullscreen").addEventListener("click", () => {
@@ -101,6 +103,7 @@ function generate_ingredient_options() {
 
 document.querySelector("#submit").addEventListener("click", submit)
 
+// TODO: refactor for less constants
 const INGREDIENT_FIELDS = ["amount", "unit", "name"]
 const RECIPE_DRAFT_KEY = "new_recipe_draft_v1"
 const DRAFT_SAVE_DEBOUNCE_MS = 300
@@ -108,7 +111,10 @@ const DRAFT_SAVE_DEBOUNCE_MS = 300
 let draftSaveTimer = null
 
 function get_recipe_payload() {
+    // get metadata
     let data = Object.fromEntries(new FormData(document.querySelector("#recipe-metadata")))
+
+    // Rename title to name
     data["name"] = data["title"] || ""
     delete data["title"]
 
@@ -116,18 +122,28 @@ function get_recipe_payload() {
     data["slug"] = document.querySelector("#slug").value || ""
     data["directions"] = easyMDE.value()
 
+    // Get ingredient data
     let raw_ingredient_data = new FormData(document.querySelector("#ingredient-form"))
-    let arrs = INGREDIENT_FIELDS.map(i => raw_ingredient_data.getAll(i))
+    let columns = INGREDIENT_FIELDS.map(i => raw_ingredient_data.getAll(i))
 
-    data["recipe_ingredients"] = arrs[0].map((_, i) => {
-        const ingredient = Object.fromEntries(INGREDIENT_FIELDS.map((k, v) => [k, arrs[v][i]]))
-        ingredient.slug = slugify(ingredient.name)
+    // Include ingredient data in the payload
+    // I forgot how this works but it does
+    data["recipe_ingredients"] = columns[0].map((_, ingredient_index) => { // Iterate through ingredients with index
+
+        const ingredient = Object.fromEntries(
+            INGREDIENT_FIELDS.map((field, field_index) => { // Iterate through fields 
+                [field, columns[field_index][ingredient_index]]} // Get entry for <field>, <value>
+            )
+        )
+
+        ingredient.slug = slugify(ingredient.name) 
         return ingredient
-    }).filter((ingredient) => ingredient.name && ingredient.slug)
+    }).filter((ingredient) => ingredient.name && ingredient.slug) // Remove empty ingredients
 
     return data
 }
 
+// TODO: rework this functionality and use OOP
 function save_recipe_draft() {
     localStorage.setItem(RECIPE_DRAFT_KEY, JSON.stringify(get_recipe_payload()))
 }
