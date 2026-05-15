@@ -34,6 +34,12 @@ fi
 echo "Using compose command: $COMPOSE_CMD"
 echo ""
 
+# Ensure the external DB volume exists so `docker compose down -v`
+# cannot remove the actual PostgreSQL data.
+DB_VOLUME_NAME="${COOKBOOK_DB_VOLUME:-cookbook_postgres_data}"
+echo "Ensuring protected database volume exists: $DB_VOLUME_NAME"
+docker volume create "$DB_VOLUME_NAME" > /dev/null
+
 # Step 1: Create .env file if it doesn't exist
 if [ ! -f .env ]; then
     echo "Creating .env file from template..."
@@ -118,7 +124,7 @@ echo "  - SCSS assets: Built (if pnpm available locally)"
 echo ""
 echo "To start the application, run:"
 echo ""
-echo "  $COMPOSE_CMD up --build"
+echo "  $COMPOSE_CMD --profile local up --build"
 echo ""
 echo "The database will be automatically upgraded on container startup."
 echo "The app will be available at http://localhost:5000"
@@ -126,5 +132,6 @@ echo ""
 echo "Other useful commands:"
 echo "  - View logs: $COMPOSE_CMD logs -f"
 echo "  - Stop services: $COMPOSE_CMD down"
-echo "  - Remove data: $COMPOSE_CMD down -v"
+echo "  - Purge all non-external volumes: $COMPOSE_CMD down -v"
+echo "    (DB data is protected in external volume: $DB_VOLUME_NAME)"
 echo ""
