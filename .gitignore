@@ -748,3 +748,6 @@ app/static/css/*.css.map
 
 # Docker secrets (keep only examples)
 .secrets/postgres_password
+
+# Local Docker Compose overrides (e.g. system-wide postgres)
+docker-compose.override.yml

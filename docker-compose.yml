@@ -41,6 +41,7 @@ services:
 
 volumes:
   postgres_data:
+    external: true  # Prevents accidental deletion via 'down -v'. Create once with: docker volume create cookbook_postgres_data
   instance_data:
 
 secrets:
