@@ -13,7 +13,9 @@ dependencies = [
     "pint>=0.23",
     "psycopg2-binary>=2.9.9",
     "pydantic>=2.0.0",
+    "pyrefly>=0.60.0",
     "sqlalchemy>=2.0.0",
+    "ty>=0.0.39",
     "werkzeug>=3.0.0",
 ]
 
