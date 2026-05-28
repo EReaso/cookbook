@@ -5,6 +5,7 @@ from pint import Quantity as Q_
 from pint import UnitRegistry
 
 from app.extensions import db
+from app.recipes.utils import slugify
 
 ureg = UnitRegistry()
 
@@ -53,6 +54,10 @@ class Ingredient(db.Model):
     density = db.Column(db.Float(), nullable=True)  # Use density in g/ml
 
     tags = db.relationship("Tag", secondary="ingredient_tag", back_populates="ingredients")
+
+    @db.validates("slug")
+    def _normalize_slug(self, key, value):
+        return slugify(value or self.name)
 
 
 class RecipeIngredient(db.Model):
